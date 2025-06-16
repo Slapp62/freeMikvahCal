@@ -1,41 +1,76 @@
-import { FieldValues, useForm,  } from "react-hook-form";
-import { Button, Stack, TextInput, Title } from "@mantine/core";
+import { Controller, useForm,  } from "react-hook-form";
+import { Button, Checkbox, PasswordInput, Select, Stack, TextInput, Title } from "@mantine/core";
 import { supabase } from "../lib/supabaseClient";
-import { notifications } from '@mantine/notifications';
 import '@mantine/notifications/styles.css';
+import { notifications } from "@mantine/notifications";
 
 const RegisterPage = () => {
     type RegisterValues = {
         email: string;
         password: string;
+        confirmPassword: string;
+        ethnicity: string;
+        onat_ohr_zarua: boolean;  
+        beinonit_30_31: boolean; 
     }
 
-    const {register, handleSubmit, reset, formState: {errors}} = useForm<RegisterValues>(
+    const {register, control, handleSubmit, reset, watch, formState: {errors}} = useForm<RegisterValues>(
         {
-            mode: 'onChange',
+            mode: 'onBlur',
         }
     );
 
-    const onSubmit = async (data : FieldValues) => {
-    
-        const { error } = await supabase.auth.signUp({
-        email: data.email,
-        password: data.password
-        });
+    const onSubmit = async (formData : RegisterValues) => {
 
+        // 1: submit email and password and receive user and session data
+        const { data ,error } = await supabase.auth.signUp({
+        email: formData.email,
+        password: formData.password,
+        });
+        
+        // 2: if there is an error signing up, show notification
         if (error) {
+            console.error('Sign-up Error:', error);
             notifications.show({
-                color: "red", 
-                title: "Sign up error:", 
-                message: error.message})
-        } else {
-            notifications.show({
-                color: "green", 
-                title: "Success!", 
-                message: "Check your email to confirm your account."})
-            reset();
+                title: 'Error signing up',
+                message: error.message,
+                color: 'red',
+            });
+            return; 
         }
-    };
+
+            // 3: if user does not exist, insert rest of data into table
+        if (data.user) {
+            const { error: insertError } = await supabase.from("minhagim_chumrot").insert({
+                id: data.user.id,
+                ethnicity: formData.ethnicity,
+                onat_ohr_zarua: formData.onat_ohr_zarua,
+                beinonit_30_31: formData.beinonit_30_31
+            });
+            
+            // 4: if there is an error inserting data, show notification
+            if (insertError) {
+                console.error('Error inserting profile data:', insertError);
+                notifications.show({
+                    title: 'Error saving information',
+                    message: insertError.message,
+                    color: 'red',
+                });
+                return;
+            }
+
+            // 5: if data is inserted successfully, show notification
+            console.log(data.user, data.session);
+            notifications.show({
+                title: 'Sign up successful!',
+                message: 'Please check your email to confirm your registration.',
+                color: 'green',
+            });
+            reset();
+                
+        }
+    }
+
 
   return (
     <Stack w='80%' mx='auto'>
@@ -58,7 +93,7 @@ const RegisterPage = () => {
           )}
         />
 
-        <TextInput
+        <PasswordInput
           label="Password"
           placeholder="Your password"
           required
@@ -76,6 +111,40 @@ const RegisterPage = () => {
                 }
             })}
         />
+
+        <PasswordInput
+          label="Confirm Password"
+          placeholder="Re-type your password"
+          required
+          type="password"
+          error={errors.confirmPassword?.message}
+          {...register("confirmPassword", 
+            {
+                validate: (value) => value === watch('password') || "Passwords do not match",
+                required: "Confirmation is required",
+            })}
+        />
+
+        <Controller
+            name = "ethnicity"
+            control = {control}
+            render={({ field }) => (
+                <Select
+                    label="Jewish Ethnicity"
+                    placeholder="Pick one"
+                    data={[
+                        { value: 'Ashkenazi', label: 'Ashkenazi' },
+                        { value: 'Sephardi', label: 'Sephardi' },
+                        { value: 'Teimani', label: 'Teimani' },
+                        { value: 'Other', label: 'Other' },
+                    ]}
+                    {...field}
+                /> 
+            )}
+        />
+
+        <Checkbox label="Onat Ohr Zarua" {...register("onat_ohr_zarua")}/>
+        <Checkbox label="Onah Beinonit on 30 & 31" {...register("beinonit_30_31")}/>
 
         <Button type="submit">Register</Button>
         </Stack>

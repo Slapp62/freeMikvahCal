@@ -1,0 +1,73 @@
+/* Customizing the entire calendar container */
+.calendar .fc {
+  background-color:rgb(249, 245, 248); /* Light gray background for the calendar */
+  border: none; /* Subtle border around the calendar */
+  border-radius: 8px; /* Slightly rounded corners */
+}
+
+/* Customizing the header toolbar */
+.calendar .fc .fc-toolbar {
+  background-color:rgb(244, 66, 229); /* Google Blue for the toolbar background */
+  color: white; /* White text for toolbar elements */
+  padding: 10px 15px;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+  border: none; 
+}
+
+/* Customizing the toolbar title (e.g., "June 2025") */
+.calendar .fc .fc-toolbar-title {
+  color: white; /* Ensure title is white */
+  font-size: 1.2em;
+  font-weight: 500;
+}
+
+/* Customizing the toolbar buttons */
+.calendar .fc .fc-button {
+  background-color:rgb(172, 12, 12); /* Lighter blue for buttons */
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  margin-left: 5px;
+}
+
+.calendar .fc .fc-button:hover {
+  background-color: #357ae8; /* Darker blue on hover */
+}
+
+/* Customizing individual day cells */
+.calendar .fc .fc-daygrid-day {
+  background-color: #ffffff; /* White background for all day cells */
+  border: 1px solid #f0f0f0; /* Light border between cells */
+  font-size: 0.6em;
+}
+
+/* Styling for the current day cell */
+.calendar .fc .fc-day-today {
+  background-color:rgb(75, 224, 226); /* Light yellow for today's date */
+  border: 2px solidrgb(59, 242, 255); /* Stronger yellow border for today */
+}
+
+/* Styling for event blocks */
+.calendar .fc-event {
+  background-color: #00bcd4; /* Cyan background for events */
+  border-color: #0097a7; /* Darker cyan border */
+  color: white; /* White text for events */
+  font-size: 0.5em;
+  padding: 3px 5px;
+  border-radius: 4px;
+  margin-bottom: 2px; /* Small space between events */
+}
+
+/* When an event is hovered or selected */
+.calendar .fc-event:hover {
+    background-color:rgb(75, 226, 85);
+    opacity: 0.9;
+}
+
+/* Customize the "more" link for hidden events */
+.calendar .fc-daygrid-more-link {
+  color: #007bff; /* Blue text for the "more" link */
+  font-weight: bold;
+}
