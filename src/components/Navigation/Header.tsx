@@ -10,6 +10,7 @@ import clsx from 'clsx';
 import { Link, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { useAuthStore } from '../../Zstore.ts/authStore';
+import { supabase } from '../../lib/supabaseClient';
 
   
   export function Header() {
@@ -19,9 +20,14 @@ import { useAuthStore } from '../../Zstore.ts/authStore';
     const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] = useDisclosure(false);
     const { colorScheme } = useMantineColorScheme();
   
-    const logoutHandler = () => {
-      jumpTo('/');
-      clearSession();
+    const logoutHandler = async () => {
+        const { error } = await supabase.auth.signOut()
+        if (!error) {
+           clearSession();
+        } else {
+            console.error('Logout error:', error)
+        }
+        jumpTo('/');
     }
 
     const [scrolled, setScrolled] = useState(false);
@@ -75,7 +81,7 @@ import { useAuthStore } from '../../Zstore.ts/authStore';
           onClose={closeDrawer}
           size="60%"
           padding="md"
-          title="IsraJobs"
+          title="TheFreeMikvahCal"
           hiddenFrom="md"
           zIndex={1000000}
         >
@@ -92,21 +98,18 @@ import { useAuthStore } from '../../Zstore.ts/authStore';
                 </Flex>
             <Divider my="md" />
 
-            
-
             <Flex justify="space-evenly" ta="center" p="sm" gap={5} direction="column">
               
-               <Button component={Link} to='/login' onClick={closeDrawer} w="95%" variant="outline">Login</Button>
-
+                {!session && (<>
+                    <Button component={Link} to='/login' onClick={closeDrawer} w="95%" variant="outline">Login</Button>
+                    <Button  component={Link} to='/register' onClick={closeDrawer} w="95%">Register</Button>
+                </>)}
               
-              <Button w="95%" component={Link} to='/register' onClick={closeDrawer}>Register</Button>
-
-              
+                {session && (
                 <Button variant="outline" onClick={() => {
                     logoutHandler(); 
                     closeDrawer()}}
-                >Logout
-                </Button>
+                > Logout </Button>)}
             </Flex>
           </ScrollArea>
         </Drawer>
