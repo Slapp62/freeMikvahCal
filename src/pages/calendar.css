@@ -40,7 +40,9 @@
 .calendar .fc .fc-daygrid-day {
   background-color: #ffffff; /* White background for all day cells */
   border: 1px solid #f0f0f0; /* Light border between cells */
-  font-size: 0.6em;
+  padding: 5px;
+  font-size: 0.8em;
+
 }
 
 /* Styling for the current day cell */
