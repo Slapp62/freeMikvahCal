@@ -1,13 +1,13 @@
 /* Customizing the entire calendar container */
 .calendar .fc {
-  background-color:rgb(249, 245, 248); /* Light gray background for the calendar */
+  background-color:rgb(163, 21, 102); /* Light gray background for the calendar */
   border: none; /* Subtle border around the calendar */
-  border-radius: 8px; /* Slightly rounded corners */
+  border-radius: 10px; /* Slightly rounded corners */
 }
 
 /* Customizing the header toolbar */
 .calendar .fc .fc-toolbar {
-  background-color:rgb(244, 66, 229); /* Google Blue for the toolbar background */
+  background-color: rgb(163, 21, 102); /* Google Blue for the toolbar background */
   color: white; /* White text for toolbar elements */
   padding: 10px 15px;
   border-top-left-radius: 8px;
@@ -22,6 +22,10 @@
   font-weight: 500;
 }
 
+.calendar .fc .fc-col-header{
+    background-color:rgb(250, 122, 218); 
+    color: rgb(131, 10, 10);
+}
 /* Customizing the toolbar buttons */
 .calendar .fc .fc-button {
   background-color:rgb(172, 12, 12); /* Lighter blue for buttons */
@@ -38,26 +42,26 @@
 
 /* Customizing individual day cells */
 .calendar .fc .fc-daygrid-day {
-  background-color: #ffffff; /* White background for all day cells */
+  background-color: rgba(209, 27, 130, 0); /* White background for all day cells */
   border: 1px solid #f0f0f0; /* Light border between cells */
   padding: 5px;
   font-size: 0.8em;
-
+  color: white;
 }
 
 /* Styling for the current day cell */
 .calendar .fc .fc-day-today {
-  background-color:rgb(75, 224, 226); /* Light yellow for today's date */
+  background-color:rgb(226, 130, 75); /* Light yellow for today's date */
   border: 2px solidrgb(59, 242, 255); /* Stronger yellow border for today */
 }
 
 /* Styling for event blocks */
 .calendar .fc-event {
-  background-color: #00bcd4; /* Cyan background for events */
+  background-color:rgb(42, 37, 143); /* Cyan background for events */
   border-color: #0097a7; /* Darker cyan border */
   color: white; /* White text for events */
-  font-size: 0.5em;
-  padding: 3px 5px;
+  font-size: 0.8em;
+  padding: 2px 5px;
   border-radius: 4px;
   margin-bottom: 2px; /* Small space between events */
 }

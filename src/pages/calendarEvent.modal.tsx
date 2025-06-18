@@ -1,16 +1,14 @@
-import { Modal } from '@mantine/core';
+import { Modal, Tabs } from '@mantine/core';
 import { useEffect, useState } from 'react';
-import PeriodEvent from './periodEvent';
+import PeriodEventForm from './periodEventForm';
 
 type ModalProps = {
     clicked: boolean;
     close: () => void;
-    date: Date | null;
+    date: string | null;
 };
 
 function CalendarEventModal({clicked, close, date } : ModalProps) {
-    
-    const eventDate = date?.toLocaleDateString();
     const [closeOutside, setCloseOutside] = useState(false);
 
     useEffect(() => {
@@ -30,14 +28,34 @@ function CalendarEventModal({clicked, close, date } : ModalProps) {
         <Modal 
             opened={clicked} 
             onClose={close}
-            title={`Entering an event for ${eventDate}`}
+            title={`Entering an event for ${date}`}
             closeOnClickOutside={closeOutside}
             centered
-            size='sm'
+            size='md'
             radius="md"
         >
-        
-            <PeriodEvent/>
+            <Tabs defaultValue="period">
+                <Tabs.List mb={10}>
+                    <Tabs.Tab value="period" >
+                    Period Event
+                    </Tabs.Tab>
+                    <Tabs.Tab value="bedikah" >
+                    New Bedikah
+                    </Tabs.Tab>
+                </Tabs.List>
+
+                <Tabs.Panel value="period">
+                    <PeriodEventForm 
+                        selectedDate={date}
+                        close={close}
+                    />
+                </Tabs.Panel>
+
+                <Tabs.Panel value="bedikah">
+                    Bedikah Form
+                </Tabs.Panel>
+            </Tabs>
+            
         </Modal>
     </>
     );

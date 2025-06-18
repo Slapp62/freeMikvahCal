@@ -9,19 +9,19 @@ import { LightDarkToggle } from './LightDarkToggle'
 import clsx from 'clsx';
 import { Link, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
+import { useAuthStore } from '../../Zstore.ts/authStore';
 
   
   export function Header() {
-   
-    
+    const session = useAuthStore((state) => state.session);
+    const clearSession = useAuthStore((state) => state.clearSession);
     const jumpTo = useNavigate();
     const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] = useDisclosure(false);
     const { colorScheme } = useMantineColorScheme();
   
     const logoutHandler = () => {
       jumpTo('/');
-      sessionStorage.removeItem('token');
-      localStorage.removeItem('token');
+      clearSession();
     }
 
     const [scrolled, setScrolled] = useState(false);
@@ -52,10 +52,12 @@ import { useEffect, useState } from 'react';
 
             <Group>
               <Group visibleFrom="xs">
+                {!session && ( <>
                 <Button component={Link} to='/login' variant="outline">Login</Button>
                 <Button component={Link} to='/register'>Sign Up</Button>
+                </>)}
 
-                <Button variant="outline" onClick={logoutHandler}>Logout</Button>
+                {session && <Button variant="outline" onClick={logoutHandler}>Logout</Button>}
               </Group>
 
               <Group >
