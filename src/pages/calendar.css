@@ -51,25 +51,32 @@
 
 /* Styling for the current day cell */
 .calendar .fc .fc-day-today {
-  background-color:rgb(226, 130, 75); /* Light yellow for today's date */
+  background-color:rgb(67, 171, 11); /* Light yellow for today's date */
   border: 2px solidrgb(59, 242, 255); /* Stronger yellow border for today */
 }
 
 /* Styling for event blocks */
 .calendar .fc-event {
-  background-color:rgb(42, 37, 143); /* Cyan background for events */
   border-color: #0097a7; /* Darker cyan border */
   color: white; /* White text for events */
-  font-size: 0.8em;
+  font-size: 1em;
   padding: 2px 5px;
   border-radius: 4px;
-  margin-bottom: 2px; /* Small space between events */
+  margin-bottom: 2px;
+  opacity: 1; /* Small space between events */
+}
+
+.calendar .fc-event.period-start {
+    background-color:rgb(219, 14, 14);
+}
+
+.calendar .fc-event.hefsek {
+    background-color:rgb(37, 73, 216);
 }
 
 /* When an event is hovered or selected */
 .calendar .fc-event:hover {
-    background-color:rgb(75, 226, 85);
-    opacity: 0.9;
+    background-color:rgb(213, 105, 23);
 }
 
 /* Customize the "more" link for hidden events */

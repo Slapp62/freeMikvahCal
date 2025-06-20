@@ -1,29 +1,23 @@
-.navbarLight{
-  background-color: #ffffff;
-}
-
-.navbarDark{
-  background-color: dimgrey;
-}
 
 .navbarTop{
-  postition: sticky;
-  top: 0;
-  background-color: white;
-  z-index: 999;
-  transition: all 0.3s ease; 
-  box-shadow: 0px 0px 5px 0px #bbb;
-}
+    margin-inline: auto;
+    margin-top: 5px;
+    width: 80%;
+    background-color: none;
+    transition: all 0.3s ease; 
+    
+    }
 
 .navbarScrolled{  
-  background-color: whitesmoke;
-  opacity: 0.95;
-  top: 10px;
-  width: 95%;      
-  margin-inline: auto;        
-  border-radius: 15px;  
-  transition: all 0.3s ease;  
-  overflow: hidden;
+    background-color: whitesmoke;
+    opacity: 0.95;
+    top: 10px;
+    width: 95%;      
+    margin-inline: auto;        
+    border-radius: 15px;  
+    transition: all 0.3s ease;  
+    overflow: hidden;
+    background-color:
 }
 
 .header {

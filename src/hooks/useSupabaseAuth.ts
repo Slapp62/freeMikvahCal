@@ -1,9 +1,9 @@
 import { useEffect } from 'react'
 import { supabase } from '../lib/supabaseClient'
-import { useAuthStore } from '../Zstore.ts/authStore'
+import { useZStore } from '../Zstore.ts'
 
 export function useSupabaseAuth() {
-  const setSession = useAuthStore((state) => state.setSession)
+  const setSession = useZStore((state) => state.setSession)
 
   useEffect(() => {
     // Get current session on mount

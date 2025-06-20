@@ -3,6 +3,7 @@ import { Outlet } from "react-router-dom";
 import { Header } from "../components/Navigation/Header";
 import { Footer } from "../components/Navigation/Footer";
 import { useSupabaseAuth } from "../hooks/useSupabaseAuth";
+import classes from './Layout.module.css'
 
 
 export function Layout() {
@@ -10,11 +11,11 @@ export function Layout() {
     
     return (
       <>
-        <Flex direction='column' mih='100vh'>
+        <Flex direction='column' mih='100vh' className={classes.wrapper}>
           
             <Header />
             
-            <main style={{flex: 1, margin: 0, }}>
+            <main style={{flex: 1, margin: 0}}>
             <Outlet />
             </main>
             

@@ -1,14 +1,14 @@
-import { create } from 'zustand'
+import { StateCreator } from 'zustand'
 import { Session } from '@supabase/supabase-js'
 
-interface AuthState {
+export interface AuthSlice {
   session: Session | null
   setSession: (session: Session | null) => void
   clearSession: () => void
 }
 
-export const useAuthStore = create<AuthState>((set) => ({
+export const createAuthSlice: StateCreator<AuthSlice> = (set) => ({
   session: null,
   setSession: (session) => set({ session }),
   clearSession: () => set({ session: null }),
-}))
+})

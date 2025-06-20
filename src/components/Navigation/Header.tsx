@@ -9,13 +9,13 @@ import { LightDarkToggle } from './LightDarkToggle'
 import clsx from 'clsx';
 import { Link, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { useAuthStore } from '../../Zstore.ts/authStore';
 import { supabase } from '../../lib/supabaseClient';
+import useStore from '../../Zstore.ts';
 
   
   export function Header() {
-    const session = useAuthStore((state) => state.session);
-    const clearSession = useAuthStore((state) => state.clearSession);
+    const session = useStore((state) => state.session);
+    const clearSession = useStore((state) => state.clearSession);
     const jumpTo = useNavigate();
     const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] = useDisclosure(false);
     const { colorScheme } = useMantineColorScheme();
@@ -42,9 +42,9 @@ import { supabase } from '../../lib/supabaseClient';
     }, [])
 
     return (
-      <Box pos="sticky" className={clsx(classes.navbarTop, {[classes.navbarScrolled]: scrolled} )}>
+      <Box className={clsx(classes.navbarTop, {[classes.navbarScrolled]: scrolled} )}>
         <header className={clsx(colorScheme === 'light' ? classes.navbarLight : classes.navbarDark, classes.header)}>
-          <Flex justify="space-between" h='100%' >
+        <Flex justify="space-between" h='100%' >
 
             <Group visibleFrom="md" gap={5}>
               <Link  to="/" className={classes.link}>
@@ -54,6 +54,11 @@ import { supabase } from '../../lib/supabaseClient';
               <Link to="/about" className={classes.link} >
                 <Text fw={700}>About</Text>
               </Link>
+
+              {session && (
+              <Link to="/calendar" className={classes.link} >
+                <Text fw={700}>Calendar</Text>
+              </Link>)}
             </Group>
 
             <Group>
