@@ -40,7 +40,6 @@ const useLoadEvents = () => {
                         className: 'hefsek',
                     })
                 }
-                console.log(period.start_date);
                 return events
             })
             setEvents(calendarEvents ?? [])

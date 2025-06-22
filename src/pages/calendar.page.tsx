@@ -2,86 +2,46 @@ import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin, { DateClickArg } from '@fullcalendar/interaction';
 import { EventClickArg } from '@fullcalendar/core';
-import { Button, Modal, Select, Stack, Title } from '@mantine/core';
+import { Stack, Title } from '@mantine/core';
 import './calendar.css';
-import CalendarEventModal from './calendarEvent.modal';
+import CalendarEventModal from './newCalEvent.modal.tsx';
 import { useState } from 'react';
 import useLoadEvents from '../hooks/useLoadEvents.ts';
-import { supabase } from '../lib/supabaseClient.ts';
 import useZStore from '../Zstore.ts/index.ts';
+import EditEventModal from './editCalEvent.modal.tsx';
+import { EventImpl } from '@fullcalendar/core/internal';
 
 export default function CalendarPage() {
-
     const events = useLoadEvents();
-    const removeEvent = useZStore((state) => state.removeEvent);
-    const [modalOpened, setModalOpened] = useState(false);
-    const [selectedDate, setSelectedDate] = useState<string | null>(null);
-
-    const [eventModalOpened, setEventModalOpened] = useState(false);
-    const close = () => setEventModalOpened(false);
-    const open = () => setEventModalOpened(true);
-    const [selectedEvent, setSelectedEvent] = useState<any | null>(null);
+    const setClickedDate = useZStore((state) => state.setClickedDate);
     
-    const handleDateClick = (arg: DateClickArg) => {
-        const dateClicked = arg.date.toISOString().split('T')[0];
-        setModalOpened(true);
-        setSelectedDate(dateClicked);
-    };
+    // New Event Modal
+    const [newEventModalOpened, setNewEventModalOpened] = useState(false);
+    const closeNewEventModal = () => setNewEventModalOpened(false);
+    
+    //Edit Event Modal
+    const [eventModalOpened, setEventModalOpened] = useState(false);
+    const closeEventModal = () => setEventModalOpened(false);
+    const [selectedEvent, setSelectedEvent] = useState<EventImpl | null>(null);
 
-    const handleCloseDateModal = () => {
-        setModalOpened(false);
+    const handleDateClick = (arg: DateClickArg) => {
+        const date = arg.date;
+        const dateClicked = new Date(Date.UTC(
+            date.getFullYear(), 
+            date.getMonth(), 
+            date.getDate()))
+            .toISOString().split('T')[0];
+        setClickedDate(dateClicked);
+
+        setNewEventModalOpened(true);
     };
 
     const handleEventClick = (arg: EventClickArg) => {
-       open();
        const eventClicked = arg.event;
-       console.log(eventClicked);
        setSelectedEvent(eventClicked);
+       setEventModalOpened(true);
     };
 
-    const handleDeleteEvent = async () => {
-        close();
-
-        if (selectedEvent.title.startsWith('New Period')) {
-            console.log('Deleting Period');
-            
-            const { error } = await supabase
-                .from("periods")
-                .update({ start_date: null, onah: null, notes: null })
-                .eq('start_date', selectedEvent.start.toLocaleString());
-            if (error) {
-                console.error("Error deleting periods:", error);
-                return;
-            }
-        }
-
-        if (selectedEvent.title.startsWith('Hefsek Tahara')) {
-            console.log('Deleting Hefsek Tahara');
-            const { error } = await supabase
-                .from("periods")
-                .update({ hefsek_date: null })
-                .eq('hefsek_date', selectedEvent.start.toLocaleString());
-            if (error) {
-                console.error("Error deleting Hefsek Tahara:", error);
-                return;
-            }
-        }
-
-        removeEvent(selectedEvent)
-    };
-
-    const handleOnahChange = async (value: string | null) => {
-        close();
-        const { error } = await supabase
-            .from("periods")
-            .update({ onah: value })
-            .eq('start_date', selectedEvent.start.toLocaleString());
-        if (error) {
-            console.error("Error updating onah:", error);
-            return;
-        }
-    };
-    
   return (
     <Stack className="calendar" w='80%' mx='auto' align='center' justify='center'>
         <Title order={3} mt={10} ta='center'>Mikvah Calendar</Title>
@@ -99,28 +59,16 @@ export default function CalendarPage() {
         />
 
         <CalendarEventModal 
-            clicked={modalOpened} 
-            close={handleCloseDateModal} 
-            date={selectedDate}
+            clicked={newEventModalOpened} 
+            close={closeNewEventModal} 
         /> 
 
-        <Modal opened={eventModalOpened} onClose={close} title="Edit Event" centered size="xs">
-            <Stack>
-                <Select
-                    label="Change Onah"
-                    placeholder="Pick a new time"
-                    data={
-                        [
-                            { value: 'day', label: 'Before Sunset' },
-                            { value: 'night', label: 'After Sunset' },
-                        ]
-                    }
-                    onChange={handleOnahChange}
-                />
-                <Button color="red" onClick={handleDeleteEvent}>Delete Event</Button>
-                <Button variant="outline" onClick={close}>Cancel</Button>
-            </Stack>
-        </Modal>
+        <EditEventModal
+            clicked={eventModalOpened}
+            close={closeEventModal}
+            selectedEvent={selectedEvent}
+        />
+        
     </Stack>
   );
 }

@@ -1,3 +1,4 @@
+
 interface ICalendarEvent {
     id: string,
     title: string,
@@ -13,4 +14,4 @@ interface IPeriodData {
   notes: string | null;
 }
 
-export type { ICalendarEvent, IPeriodData };
+export type { ICalendarEvent, IPeriodData};

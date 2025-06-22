@@ -10,26 +10,22 @@ type PeriodEventValues = {
     notes?: string;
 }
 
-const PeriodEventForm = ({selectedDate, close} : {selectedDate: string, close: () => void}) => {
+const PeriodEventForm = ({close} : {close: () => void}) => {
     const refetch = useZStore((state) => state.toggleRefetchFlag);
+    const dateClicked = useZStore((state) => state.dateClicked);
     const { register, handleSubmit, watch, control, formState: { errors : formErrors } } = useForm<PeriodEventValues>(); 
     const eventType = watch('eventType')
     const onSubmit = async (formData : PeriodEventValues) => {
         
         const {data, error : dbError} = await supabase.rpc('add_period_event', {
             event_type: formData.eventType,
-            selected_date: selectedDate,
+            selected_date: dateClicked,
             ...(formData.onah && {selected_onah: formData.onah}),
-            ...(formData.notes && {notes: formData.notes}),
+            ...(formData.notes && {entered_notes: formData.notes}),
         })
         
         if (dbError?.message) {
             console.log('error adding period:', dbError.message)
-            notifications.show({
-                title: 'Error',
-                message: 'Error adding event' + dbError.message,
-                color: 'red',
-            })
             return
         };
 
@@ -38,16 +34,20 @@ const PeriodEventForm = ({selectedDate, close} : {selectedDate: string, close: (
             return
         };
 
-        if (data) {
-            console.log(data[0].message);
+        if (data[0].success) {
             notifications.show({
                 title: 'Success',
                 message: 'Event added successfully',
                 color: 'green',
             })
             refetch();
+        } else {
+            notifications.show({
+                title: 'Error',
+                message: `${data[0].message}`,
+                color: 'red',
+            })
         }
-        
         close();
     }
 
@@ -61,6 +61,7 @@ const PeriodEventForm = ({selectedDate, close} : {selectedDate: string, close: (
                     <Select 
                         label="Type of Event" 
                         placeholder="Select a type" 
+                        required
                         data={[
                             {value: 'start_date', label: 'Period Start'},
                             {value: 'hefsek_date', label: 'Hefsek Taharah'},
@@ -79,6 +80,7 @@ const PeriodEventForm = ({selectedDate, close} : {selectedDate: string, close: (
                     <Select 
                         label="Time" 
                         placeholder="Select a time"
+                        required
                         disabled={eventType === 'hefsek_date' ? true : false} 
                         data={[
                             {value: 'day', label: 'Day (Before Sunset)'},
