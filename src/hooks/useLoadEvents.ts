@@ -20,11 +20,11 @@ const useLoadEvents = () => {
             }
 
             const calendarEvents = periods?.flatMap((period) => {
-                const onahLabel = period.onah === 'day' ? 'Before Sunset' : 'After Sunset';
+                //const onahLabel = period.onah === 'day' ? 'Before Sunset' : 'After Sunset';
                 const events = [
                     {
                         id: `${period.id}-start`,
-                        title: `New Period - ${onahLabel}`,
+                        title: `🩸 Night`,
                         start: period.start_date,
                         groupID: period.id,
                         className: 'period-start',
@@ -34,12 +34,13 @@ const useLoadEvents = () => {
                 if (period.hefsek_date){
                     events.push({
                         id: `${period.id}-hefsek`,
-                        title: 'Hefsek Tahara',
+                        title: '✅ Hefsek',
                         start: period.hefsek_date,
                         groupID: period.id,
                         className: 'hefsek',
                     })
                 }
+                console.log(period.start_date);
                 return events
             })
             setEvents(calendarEvents ?? [])

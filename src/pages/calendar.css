@@ -64,6 +64,7 @@
   border-radius: 4px;
   margin-bottom: 2px;
   opacity: 1; /* Small space between events */
+  text-wrap: wrap;
 }
 
 .calendar .fc-event.period-start {

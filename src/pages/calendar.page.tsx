@@ -23,7 +23,7 @@ export default function CalendarPage() {
     const [selectedEvent, setSelectedEvent] = useState<any | null>(null);
     
     const handleDateClick = (arg: DateClickArg) => {
-        const dateClicked = arg.date.toLocaleString();
+        const dateClicked = arg.date.toISOString().split('T')[0];
         setModalOpened(true);
         setSelectedDate(dateClicked);
     };
@@ -31,10 +31,6 @@ export default function CalendarPage() {
     const handleCloseDateModal = () => {
         setModalOpened(false);
     };
-
-
-
-
 
     const handleEventClick = (arg: EventClickArg) => {
        open();
@@ -99,6 +95,7 @@ export default function CalendarPage() {
             selectable={true}
             height='auto'
             eventDisplay='auto'
+            timeZone='local'
         />
 
         <CalendarEventModal 

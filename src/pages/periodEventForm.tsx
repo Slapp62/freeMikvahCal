@@ -10,121 +10,45 @@ type PeriodEventValues = {
     notes?: string;
 }
 
-const PeriodEventForm = ({selectedDate, close} : {selectedDate: string | null, close: () => void}) => {
-    const addEvent = useZStore((state) => state.addEvent);
-    const { register, handleSubmit, watch, control, formState: { errors } } = useForm<PeriodEventValues>(); 
+const PeriodEventForm = ({selectedDate, close} : {selectedDate: string, close: () => void}) => {
+    const refetch = useZStore((state) => state.toggleRefetchFlag);
+    const { register, handleSubmit, watch, control, formState: { errors : formErrors } } = useForm<PeriodEventValues>(); 
     const eventType = watch('eventType')
     const onSubmit = async (formData : PeriodEventValues) => {
-        try {
-            if (formData.eventType === 'start_date') {
-                // check if user already created a period for it
-                const { data : check1, error : checkError1 } = await supabase
-                .from("periods")
-                .select('id')
-                .lt('start_date', selectedDate)
-                .is('hefsek_date', null)
-                .limit(1)
-                if (checkError1) {console.log(checkError1)};
-                    
-                if (check1) {
-                    notifications.show({
-                        title: 'Error',
-                        message: 'A period beginning as already been entered',
-                        color: 'red',
-                    });
-                    close();
-                    return
-                }
-
-                //if the period is new, check if hefsek already exists and user is changing period start date
-                const { data : _check2, error : checkError2 } = await supabase
-                    .from("periods")
-                    .select('id')
-                    .gt('hefsek_date', selectedDate)
-                    .order('hefsek_date', { ascending: true })
-                    .limit(1)
-                if (checkError2) {return console.log(checkError2)};
-                
-                if (_check2){
-                    // get period id for alrady exisiting hefsek and insert new period start data
-                }
-
-                const { data : newPeriodData, error } = await supabase.from("periods").insert({
-                    start_date: selectedDate ,
-                    onah: formData.onah,
-                    notes: formData.notes
-                }); 
-                console.log(newPeriodData);
-                if (error) return console.log(error);
-
-                const {data, error : fetchError} = await supabase
-                    .from("periods")
-                    .select('id')
-                    .eq('start_date', selectedDate);
-                console.log(data);
-                
-                if (fetchError) return console.log(fetchError);
-                
-                const newPeriodID = data?.[0].id;
-
-                const startEvent = {
-                    id: `${newPeriodID}-start`,
-                    title: 'Period Start',
-                    start: selectedDate,
-                    groupID: newPeriodID,
-                }
-                addEvent(startEvent);
-                useZStore.getState().toggleRefetchFlag();
-            }
-
-            if (formData.eventType === 'hefsek_date'){
-                
-                const {data, error : fetchError} = await supabase
-                    .from("periods")
-                    .select('id')
-                    .lt('start_date', selectedDate)
-                    .order('start_date', { ascending: false })
-                    .limit(1);
-                console.log(data);
-                
-                if (fetchError) return console.log(fetchError);
-                
-                const previousPeriodID = data?.[0].id;
-                if (!previousPeriodID) return console.log('No previous period found.');
-
-                const { data : updatedData, error : updateError } = await supabase
-                    .from("periods")
-                    .update({hefsek_date: selectedDate})
-                    .eq('id', previousPeriodID);
-                if (updateError) return console.log(updateError);
-                console.log(updatedData);
-
-                const hefsekEvent = {
-                    id: `${previousPeriodID}-hefsek`,
-                    title: 'Hefsek Taharah',
-                    start: selectedDate,
-                    groupID: previousPeriodID
-                }
-                addEvent(hefsekEvent);
-                useZStore.getState().toggleRefetchFlag();
-            }
-
+        
+        const {data, error : dbError} = await supabase.rpc('add_period_event', {
+            event_type: formData.eventType,
+            selected_date: selectedDate,
+            ...(formData.onah && {selected_onah: formData.onah}),
+            ...(formData.notes && {notes: formData.notes}),
+        })
+        
+        if (dbError?.message) {
+            console.log('error adding period:', dbError.message)
             notifications.show({
-                title: 'Event added successfully',
-                message: 'The event has been added to the database.',
-                color: 'green',
-            });
-            close();
-
-        } catch (error : any){
-            console.log('Form Errors:', errors);
-            console.error('Error updating database:', error);
-            notifications.show({
-                title: 'Error adding event',
-                message: error.message,
+                title: 'Error',
+                message: 'Error adding event' + dbError.message,
                 color: 'red',
-            });
+            })
+            return
+        };
+
+        if (formErrors.root?.message) {
+            console.log('error with form handling', formErrors.root.message);
+            return
+        };
+
+        if (data) {
+            console.log(data[0].message);
+            notifications.show({
+                title: 'Success',
+                message: 'Event added successfully',
+                color: 'green',
+            })
+            refetch();
         }
+        
+        close();
     }
 
     return (
@@ -157,8 +81,8 @@ const PeriodEventForm = ({selectedDate, close} : {selectedDate: string | null, c
                         placeholder="Select a time"
                         disabled={eventType === 'hefsek_date' ? true : false} 
                         data={[
-                            {value: 'day', label: 'Before Sunset'},
-                            {value: 'night', label: 'After Sunset'},
+                            {value: 'day', label: 'Day (Before Sunset)'},
+                            {value: 'night', label: 'Night (After Sunset)'},
                         ]} 
                         {...field}
                         value={field.value ?? null}
