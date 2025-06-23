@@ -3,7 +3,7 @@ import { Outlet } from "react-router-dom";
 import { Header } from "../components/Navigation/Header";
 import { Footer } from "../components/Navigation/Footer";
 import { useSupabaseAuth } from "../hooks/useSupabaseAuth";
-import classes from './Layout.module.css'
+import classes from './layout.module.css'
 
 
 export function Layout() {
