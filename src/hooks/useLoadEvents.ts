@@ -10,16 +10,25 @@ const useLoadEvents = () => {
    
     useEffect(() => {
         const fetchEvents = async () => {
-            const {data : periods, error} = await supabase
+            const {data: periods, error: periodsError} = await supabase
                 .from("periods")
                 .select('id, start_date, onah, hefsek_date,  notes')
                 .order('start_date', { ascending: false });
-            if (error) {
-                console.error("Error fetching periods:", error);
+            if (periodsError) {
+                console.error("Error fetching periods:", periodsError);
                 return;
             }
 
-            const calendarEvents = periods?.flatMap((period) => {
+            const {data: onahs, error: onahsError} = await supabase
+                .from("onahs")
+                .select('period_id, onah_date, onah_time, type')
+                .order('onah_date', { ascending: false });
+            if (onahsError) {
+                console.error("Error fetching onahs:", onahsError);
+                return;
+            }
+
+            const periodEvents = periods?.flatMap((period) => {
                 //const onahLabel = period.onah === 'day' ? 'Before Sunset' : 'After Sunset';
                 const events = [
                     {
@@ -42,7 +51,43 @@ const useLoadEvents = () => {
                 }
                 return events
             })
-            setEvents(calendarEvents ?? [])
+
+            const onahEvents = onahs.flatMap((onah) => {
+                const events = [];
+
+                if (onah.type === 'beinonit_30') {
+                    events.push({
+                        id: `${onah.period_id}-beinonit_30`,
+                        title: `Onah Beinonit`,
+                        start: onah.onah_date,
+                        groupID: onah.period_id,
+                        className: 'onah',
+                    })
+                };
+
+                if (onah.type === 'haflagah') {
+                    events.push({
+                        id: `${onah.period_id}-haflagah`,
+                        title: `Onah Haflagah`,
+                        start: onah.onah_date,
+                        groupID: onah.period_id,
+                        className: 'onah',
+                    })
+                };
+
+                if (onah.type === 'hachodesh') {
+                    events.push({
+                        id: `${onah.period_id}-hachodesh`,
+                        title: `Onah Hachodesh`,
+                        start: onah.onah_date,
+                        groupID: onah.period_id,
+                        className: 'onah',
+                    })
+                };
+
+                return events
+            })
+            setEvents([...periodEvents, ...onahEvents])
         }
 
         fetchEvents();

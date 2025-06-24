@@ -17,7 +17,7 @@ const PeriodEventForm = ({close} : {close: () => void}) => {
     const eventType = watch('eventType')
     const onSubmit = async (formData : PeriodEventValues) => {
         
-        const {data, error : dbError} = await supabase.rpc('add_period_event', {
+        const {data, error : dbError} = await supabase.rpc('new_period_event', {
             event_type: formData.eventType,
             selected_date: dateClicked,
             ...(formData.onah && {selected_onah: formData.onah}),
