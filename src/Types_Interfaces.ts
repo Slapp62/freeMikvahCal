@@ -4,6 +4,7 @@ interface ICalendarEvent {
     title: string,
     start: any,
     groupID?: any
+    className?: string
 }
 
 interface IPeriodData {

@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { supabase } from "../lib/supabaseClient.ts";
 import useZStore from "../Zstore.ts";
+import { ICalendarEvent } from "../Types_Interfaces.ts";
 
 const useLoadEvents = () => {
     
@@ -27,7 +28,7 @@ const useLoadEvents = () => {
                 console.error("Error fetching onahs:", onahsError);
                 return;
             }
-
+            
             const periodEvents = periods?.flatMap((period) => {
                 //const onahLabel = period.onah === 'day' ? 'Before Sunset' : 'After Sunset';
                 const events = [
@@ -52,42 +53,38 @@ const useLoadEvents = () => {
                 return events
             })
 
-            const onahEvents = onahs.flatMap((onah) => {
-                const events = [];
-
+            const onahEvents= onahs.map((onah) => {
                 if (onah.type === 'beinonit_30') {
-                    events.push({
+                    return {
                         id: `${onah.period_id}-beinonit_30`,
                         title: `Onah Beinonit`,
                         start: onah.onah_date,
                         groupID: onah.period_id,
                         className: 'onah',
-                    })
-                };
-
-                if (onah.type === 'haflagah') {
-                    events.push({
+                    }
+                } else if (onah.type === 'haflagah') {
+                    return {
                         id: `${onah.period_id}-haflagah`,
                         title: `Onah Haflagah`,
                         start: onah.onah_date,
                         groupID: onah.period_id,
                         className: 'onah',
-                    })
-                };
-
-                if (onah.type === 'hachodesh') {
-                    events.push({
+                    }
+                } else if (onah.type === 'hachodesh') {
+                    return {
                         id: `${onah.period_id}-hachodesh`,
                         title: `Onah Hachodesh`,
                         start: onah.onah_date,
                         groupID: onah.period_id,
                         className: 'onah',
-                    })
+                    }
                 };
 
                 return events
             })
-            setEvents([...periodEvents, ...onahEvents])
+            console.log('onahEvents', onahEvents);
+            
+            setEvents([...periodEvents as ICalendarEvent[], ...onahEvents as ICalendarEvent[]]);
         }
 
         fetchEvents();
