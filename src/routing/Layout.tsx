@@ -15,7 +15,7 @@ export function Layout() {
           
             <Header />
             
-            <main style={{flex: 1, margin: 0}}>
+            <main className={classes.main}>
             <Outlet />
             </main>
             

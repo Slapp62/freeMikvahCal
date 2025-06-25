@@ -3,12 +3,11 @@ import {
   useMantineColorScheme,
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import classes from './Navigation.module.css';
+import classes from './Header.module.css';
 import { LightDarkToggle } from './LightDarkToggle'
 //import { Logo } from './Logo';
 import clsx from 'clsx';
 import { Link, useNavigate } from 'react-router-dom';
-import { useEffect, useState } from 'react';
 import { supabase } from '../../lib/supabaseClient';
 import useStore from '../../Zstore.ts';
 
@@ -29,20 +28,10 @@ import useStore from '../../Zstore.ts';
         }
         jumpTo('/');
     }
-
-    const [scrolled, setScrolled] = useState(false);
     
-    useEffect(() => {
-      const handleScroll = () => {
-        setScrolled(window.scrollY > 10);
-      };
-
-      window.addEventListener('scroll', handleScroll);
-      return () => window.removeEventListener('scroll', handleScroll);
-    }, [])
 
     return (
-      <Box className={clsx(classes.navbarTop, {[classes.navbarScrolled]: scrolled} )}>
+      <Box className={clsx(classes.navbarTop)}>
         <header className={clsx(colorScheme === 'light' ? classes.navbarLight : classes.navbarDark, classes.header)}>
         <Flex justify="space-between" h='100%' >
 

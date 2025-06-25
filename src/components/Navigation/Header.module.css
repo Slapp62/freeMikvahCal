@@ -1,24 +1,11 @@
 
 .navbarTop{
     margin-inline: auto;
-    margin-top: 5px;
-    width: 80%;
-    background-color: none;
+    padding-top: 5px;
+    width: 100%;
+    background-color: light-dark(var(--mantine-color-pink-8), var(--mantine-color-dark-6));
     transition: all 0.3s ease; 
-    
     }
-
-.navbarScrolled{  
-    background-color: whitesmoke;
-    opacity: 0.95;
-    top: 10px;
-    width: 95%;      
-    margin-inline: auto;        
-    border-radius: 15px;  
-    transition: all 0.3s ease;  
-    overflow: hidden;
-    background-color:
-}
 
 .header {
     padding-block: 5px;
@@ -33,11 +20,11 @@
     padding-left: var(--mantine-spacing-md);
     padding-right: var(--mantine-spacing-md);
     text-decoration: none;
-    color: light-dark(var(--mantine-color-black), var(--mantine-color-white));
+    color: light-dark(var(--mantine-color-white), var(--mantine-color-white));
     font-weight: 500;
     font-size: var(--mantine-font-size-sm);
   
-    @media (max-width: $mantine-breakpoint-sm) {
+    @media (max-width: --mantine-breakpoint-sm) {
       height: 42px;
       width: 100%;
     }
