@@ -77,85 +77,84 @@ const RegisterPage = () => {
 
 
   return (
-    <Stack w='80%' mx='auto'>
-      <Title order={1} ta="center">Register</Title>
-      
-      <Paper p={20} radius="md">
-        <form onSubmit={handleSubmit(onSubmit)}>
-            <Stack w='40%' mx='auto' gap={20}>
-            <TextInput
-            label="Email"
-            placeholder="you@mantine.dev"
-            required
-            error={errors.email?.message}
-            {...register("email", {
-                    required: "Email is required",
-                    pattern: {
-                        value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                        message: "Invalid email format"  
+    <Paper p={20} radius="md">
+        <Stack w='80%' mx='auto'>
+        <Title order={1} ta="center">Register</Title>
+            <form onSubmit={handleSubmit(onSubmit)}>
+                <Stack w='40%' mx='auto' gap={20}>
+                <TextInput
+                label="Email"
+                placeholder="you@mantine.dev"
+                required
+                error={errors.email?.message}
+                {...register("email", {
+                        required: "Email is required",
+                        pattern: {
+                            value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                            message: "Invalid email format"  
+                        }
                     }
-                }
-            )}
-            />
-
-            <PasswordInput
-            label="Password"
-            placeholder="Your password"
-            required
-            type="password"
-            error={errors.password?.message}
-            {...register("password", {
-                    required: "Password is required",
-                    minLength: {
-                        value: 8,
-                        message: "Must be at least 8 characters"
-                    },
-                    pattern: {
-                        value: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/,
-                        message: "Must contain at least one letter and one number"
-                    }
-                })}
-            />
-
-            <PasswordInput
-            label="Confirm Password"
-            placeholder="Re-type your password"
-            required
-            type="password"
-            error={errors.confirmPassword?.message}
-            {...register("confirmPassword", 
-                {
-                    validate: (value) => value === watch('password') || "Passwords do not match",
-                    required: "Confirmation is required",
-                })}
-            />
-
-            <Controller
-                name = "ethnicity"
-                control = {control}
-                render={({ field }) => (
-                    <Select
-                        label="Jewish Ethnicity"
-                        placeholder="Pick one"
-                        data={[
-                            { value: 'Ashkenazi', label: 'Ashkenazi' },
-                            { value: 'Sephardi', label: 'Sephardi' },
-                            { value: 'Teimani', label: 'Teimani' },
-                            { value: 'Other', label: 'Other' },
-                        ]}
-                        {...field}
-                    /> 
                 )}
-            />
+                />
 
-            <Checkbox label="Onat Ohr Zarua" {...register("chumrot.onat_ohr_zarua")}/>
-            <Checkbox label="Onah Beinonit on 30 & 31" {...register("chumrot.beinonit_30_31")}/>
+                <PasswordInput
+                label="Password"
+                placeholder="Your password"
+                required
+                type="password"
+                error={errors.password?.message}
+                {...register("password", {
+                        required: "Password is required",
+                        minLength: {
+                            value: 8,
+                            message: "Must be at least 8 characters"
+                        },
+                        pattern: {
+                            value: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/,
+                            message: "Must contain at least one letter and one number"
+                        }
+                    })}
+                />
 
-            <Button type="submit">Register</Button>
-            </Stack>
-        </form>
-      </Paper>
-    </Stack>
+                <PasswordInput
+                label="Confirm Password"
+                placeholder="Re-type your password"
+                required
+                type="password"
+                error={errors.confirmPassword?.message}
+                {...register("confirmPassword", 
+                    {
+                        validate: (value) => value === watch('password') || "Passwords do not match",
+                        required: "Confirmation is required",
+                    })}
+                />
+
+                <Controller
+                    name = "ethnicity"
+                    control = {control}
+                    render={({ field }) => (
+                        <Select
+                            label="Jewish Ethnicity"
+                            placeholder="Pick one"
+                            data={[
+                                { value: 'Ashkenazi', label: 'Ashkenazi' },
+                                { value: 'Sephardi', label: 'Sephardi' },
+                                { value: 'Teimani', label: 'Teimani' },
+                                { value: 'Other', label: 'Other' },
+                            ]}
+                            {...field}
+                        /> 
+                    )}
+                />
+
+                <Checkbox label="Onat Ohr Zarua" {...register("chumrot.onat_ohr_zarua")}/>
+                <Checkbox label="Onah Beinonit on 30 & 31" {...register("chumrot.beinonit_30_31")}/>
+
+                <Button type="submit">Register</Button>
+                </Stack>
+            </form>
+        </Stack>
+    </Paper>
   );
 };
 
