@@ -3,7 +3,7 @@
     margin-inline: auto;
     padding-top: 5px;
     width: 100%;
-    background-color: light-dark(var(--mantine-color-pink-8), var(--mantine-color-dark-6));
+    background-color: light-dark(var(--mantine-color-white), var(--mantine-color-dark-6));
     transition: all 0.3s ease; 
     }
 

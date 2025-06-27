@@ -78,6 +78,14 @@ const useLoadEvents = () => {
                         groupID: onah.period_id,
                         className: 'onah',
                     }
+                } else if (onah.type === 'beinonit_31') {
+                    return {
+                        id: `${onah.period_id}-beinonit_31`,
+                        title: `Onah Ohr Zaruah`,
+                        start: onah.onah_date,
+                        groupID: onah.period_id,
+                        className: 'onah',
+                    }
                 };
 
                 return events

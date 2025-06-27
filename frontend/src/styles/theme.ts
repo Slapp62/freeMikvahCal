@@ -1,51 +1,116 @@
-import { createTheme, virtualColor } from '@mantine/core';
+import { Button, Card, Container, createTheme, Paper, rem, Select, Title } from "@mantine/core";
+import type { MantineThemeOverride } from "@mantine/core";
 
-const myTheme = createTheme({
-    primaryColor: 'red',
+const CONTAINER_SIZES: Record<string, string> = {
+  xxs: rem("200px"),
+  xs: rem("300px"),
+  sm: rem("400px"),
+  md: rem("500px"),
+  lg: rem("600px"),
+  xl: rem("1400px"),
+  xxl: rem("1600px"),
+};
+
+export const myTheme: MantineThemeOverride = createTheme({
+  fontFamily: "Raleway, sans-serif",
+  fontSizes: {
+    xs: rem("12px"),
+    sm: rem("14px"),
+    md: rem("16px"),
+    lg: rem("18px"),
+    xl: rem("20px"),
+    "2xl": rem("24px"),
+    "3xl": rem("30px"),
+    "4xl": rem("36px"),
+    "5xl": rem("48px"),
+  },
+  spacing: {
+    "3xs": rem("4px"),
+    "2xs": rem("8px"),
+    xs: rem("10px"),
+    sm: rem("12px"),
+    md: rem("16px"),
+    lg: rem("20px"),
+    xl: rem("24px"),
+    "2xl": rem("28px"),
+    "3xl": rem("32px"),
+  },
+  primaryColor: "black",
+
   colors: {
-    primary: virtualColor({
-      name: 'primary',
-      dark: 'pink',
-      light: 'cyan',
+    black: [
+      "#000000",
+      "#000000",
+      "#000000",
+      "#000000",
+      "#000000",
+      "#000000",
+      "#000000",
+      "#000000",
+      "#000000",
+      "#000000",
+    ],
+  },
+
+  components: {
+    /** Put your mantine component override here */
+    Container: Container.extend({
+      vars: (_, { size, fluid }) => ({
+        root: {
+          "--container-size": fluid
+            ? "100%"
+            : size !== undefined && size in CONTAINER_SIZES
+              ? CONTAINER_SIZES[size]
+              : rem(size),
+        },
+      }),
     }),
-    // Add your color
-    white: [
-      '#ffffff',
-      '#f2f2f2',
-      '#e6e6e6',
-      '#d9d9d9',
-      '#cccccc',
-      '#bfbfbf',
-      '#b3b3b3',
-      '#a6a6a6',
-      '#999999',
-      '#8c8c8c',
-    ],
-    blue: [
-      '#e6f0ff',
-      '#dce4f5',
-      '#b9c7e2',
-      '#94a8d0',
-      '#748dc1',
-      '#5f7cb8',
-      '#5474b4',
-      '#44639f',
-      '#39588f',
-      '#2d4b81',
-    ],
-  },
+    Paper: Paper.extend({
+      defaultProps: {
+        p: "md",
+        shadow: "xl",
+        radius: "md",
+        withBorder: true,
+      },
+    }),
 
-  shadows: {
-    md: '1px 1px 3px rgba(0, 0, 0, .25)',
-    xl: '5px 5px 3px rgba(0, 0, 0, .25)',
-  },
+    Button: Button.extend({
+      defaultProps: {
+        radius: "sm",
+        size: "md",
+        color: "black",
+        fw: 800,
+      },
+    }),
 
-  fontFamily: 'Raleway, sans-serif',
-  headings: {
-    fontFamily: 'Raleway, sans-serif',
-    sizes: {
-      h1: { fontSize: '36px' },
-    },
+    Title: Title.extend({
+      defaultProps: {
+        c: "black",
+      },
+    }),
+
+    Text: Button.extend({
+      defaultProps: {
+        c: "black",
+      },
+    }),
+
+    Card: Card.extend({
+      defaultProps: {
+        p: "xl",
+        shadow: "xl",
+        radius: "var(--mantine-radius-default)",
+        withBorder: true,
+      },
+    }),
+    Select: Select.extend({
+      defaultProps: {
+        checkIconPosition: "right",
+      },
+    }),
+  },
+  other: {
+    style: "mantine",
   },
 });
 

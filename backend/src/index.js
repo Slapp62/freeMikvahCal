@@ -20,7 +20,7 @@ app.get('/', (req, res) => {
 
 // ✅ Protected route
 app.get('/api/private', (req, res) => {
-  if (!req.auth() || req.auth().userId) {
+  if (!req.auth() || !req.auth().userId) {
     return res.status(401).json({ message: 'Unauthorized' });
   }
 
