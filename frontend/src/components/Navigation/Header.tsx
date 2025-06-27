@@ -33,7 +33,7 @@ import useStore from '../../Zstore.ts';
     return (
       <Box className={clsx(classes.navbarTop)}>
         <header className={clsx(colorScheme === 'light' ? classes.navbarLight : classes.navbarDark, classes.header)}>
-        <Flex justify="space-between" h='100%' >
+        <Flex justify="space-between" h='100%' py={10} w='85%' mx='auto'>
 
             <Group visibleFrom="md" gap={5}>
               <Link  to="/" className={classes.link}>

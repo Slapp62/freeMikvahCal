@@ -1,4 +1,4 @@
-import { Button, Card, Container, createTheme, Paper, rem, Select, Title } from "@mantine/core";
+import { Button, Card, Container, createTheme, Paper, rem, Select, Title, virtualColor } from "@mantine/core";
 import type { MantineThemeOverride } from "@mantine/core";
 
 const CONTAINER_SIZES: Record<string, string> = {
@@ -35,9 +35,13 @@ export const myTheme: MantineThemeOverride = createTheme({
     "2xl": rem("28px"),
     "3xl": rem("32px"),
   },
-  primaryColor: "black",
 
   colors: {
+    primary: virtualColor({
+      name: 'primary',
+      light: 'pink',
+      dark: 'pink',
+    }),
     black: [
       "#000000",
       "#000000",
@@ -78,20 +82,20 @@ export const myTheme: MantineThemeOverride = createTheme({
       defaultProps: {
         radius: "sm",
         size: "md",
-        color: "black",
+        color: "primary",
         fw: 800,
       },
     }),
 
     Title: Title.extend({
       defaultProps: {
-        c: "black",
+        
       },
     }),
 
     Text: Button.extend({
       defaultProps: {
-        c: "black",
+       
       },
     }),
 

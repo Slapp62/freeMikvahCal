@@ -1,11 +1,8 @@
 
 .navbarTop{
-    margin-inline: auto;
-    padding-top: 5px;
-    width: 100%;
     background-color: light-dark(var(--mantine-color-white), var(--mantine-color-dark-6));
-    transition: all 0.3s ease; 
-    }
+    border-bottom: 1px solid light-dark(var(--mantine-color-pink-2), var(--mantine-color-gray-7));
+}
 
 .header {
     padding-block: 5px;
@@ -20,7 +17,7 @@
     padding-left: var(--mantine-spacing-md);
     padding-right: var(--mantine-spacing-md);
     text-decoration: none;
-    color: light-dark(var(--mantine-color-white), var(--mantine-color-white));
+    color: light-dark(var(--mantine-color-black), var(--mantine-color-white));
     font-weight: 500;
     font-size: var(--mantine-font-size-sm);
   
@@ -42,13 +39,4 @@
     @mixin hover {
       background-color: light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-7));
     }
-  }
-  
-  .dropdownFooter {
-    background-color: light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-7));
-    margin: calc(var(--mantine-spacing-md) * -1);
-    margin-top: var(--mantine-spacing-sm);
-    padding: var(--mantine-spacing-md) calc(var(--mantine-spacing-md) * 2);
-    padding-bottom: var(--mantine-spacing-xl);
-    border-top: 1px solid light-dark(var(--mantine-color-gray-1), var(--mantine-color-dark-5));
   }

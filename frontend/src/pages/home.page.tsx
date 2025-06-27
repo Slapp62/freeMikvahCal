@@ -14,45 +14,45 @@ const HomePage = () => {
         </Stack>
         
         <Grid w='80%' mx='auto' justify="space-around" mt={20}>
-                <Grid.Col span={4} style={{borderRadius: '10px', background: 'rgba(151, 151, 151, 0.5)'}}>
+                <Grid.Col bg='primary' span={4} style={{borderRadius: '10px'}}>
                     <Stack p={10} h={200} align="center" justify="center">
-                        <Text fw={500} ta="center">                        
+                        <Text c='white' fw={500} ta="center">                        
                             Automatically calculate all your halachic times. Email reminders. Always free.
                         </Text>
                     </Stack>
                 </Grid.Col>
                 
-                <Grid.Col span={7} style={{borderRadius: '10px', background: 'rgba(151, 151, 151, 0.5)'}}>
+                <Grid.Col span={7} bg='primary' style={{borderRadius: '10px'}}>
                     <Stack p={10} h={200} align="center" justify="center">
-                        <Text fw={500} ta="center">                        
+                        <Text c='white' fw={500} ta="center">                        
                             Customize your calendar according to your own minhagim.
                         </Text>
                     </Stack>
                 </Grid.Col>
-                <Grid.Col mt={30} span={7} style={{borderRadius: '10px', background: 'rgba(151, 151, 151, 0.5)'}}>
+                <Grid.Col mt={30} bg='primary' span={7} style={{borderRadius: '10px'}}>
                     <Stack p={10} h={200} align="center" justify="center">
-                        <Text fw={500}>
+                        <Text c='white' fw={500}>
                             Share with your friends and family.
                         </Text>
                         <Group>
-                            <ActionIcon>
-                                <IconBrandWhatsapp/>
+                            <ActionIcon size={35} bg='black' variant="filled" color='white' >
+                                <IconBrandWhatsapp size={30} />
                             </ActionIcon>
-                            <ActionIcon>
-                                <IconBrandTwitter/>
+                            <ActionIcon size={35} bg='black' variant="filled" color='white'>
+                                <IconBrandTwitter size={30}/>
+                            </ActionIcon  >
+                            <ActionIcon size={35} bg='black' variant="filled" color='white'>
+                                <IconBrandInstagram size={30}/>
                             </ActionIcon>
-                            <ActionIcon>
-                                <IconBrandInstagram/>
-                            </ActionIcon>
-                            <ActionIcon>
-                                <IconBrandFacebook/>
+                            <ActionIcon size={35} bg='black' variant="filled" color='white'>
+                                <IconBrandFacebook size={30}/>
                             </ActionIcon>
                         </Group>
                     </Stack>
                 </Grid.Col>
-                <Grid.Col mt={30} span={4} style={{borderRadius: '10px', background: 'rgba(151, 151, 151, 0.5)'}}>
+                <Grid.Col mt={30} bg='primary' span={4} style={{borderRadius: '10px'}}>
                     <Stack p={10} h={200} align="center" justify="center">
-                        <Text fw={500} ta="center">
+                        <Text c='white' fw={500} ta="center">
                             The support team is here to help. Contact us if you have any questions.
                         </Text>
                         <Button component={Link} to='/support' size="md">Support</Button>
