@@ -43,7 +43,7 @@ const RegisterPage = () => {
 
             // 3: if user does not exist, insert rest of data into table
         if (data.user) {
-            const { error: insertError } = await supabase.from("minhagim").insert({
+            const { error: insertError } = await supabase.from("user_info").insert({
                 id: data.user.id,
                 ethnicity: formData.ethnicity,
                 chumrot: {

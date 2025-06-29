@@ -2,7 +2,7 @@
 .calendar .fc {
   background-color:rgb(163, 21, 102); /* Light gray background for the calendar */
   border: none; /* Subtle border around the calendar */
-  border-radius: 10px; /* Slightly rounded corners */
+  border-radius: 0px; /* Slightly rounded corners */
 }
 
 /* Customizing the header toolbar */

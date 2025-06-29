@@ -15,9 +15,11 @@ import { notifications } from '@mantine/notifications';
 import { useForm } from 'react-hook-form';
 import { supabase } from '../lib/supabaseClient';
 import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 
 export function LoginPage() {
     const jumpTo = useNavigate();
+    const [isLoading, setIsLoading] = useState(false);
 
     type LoginValues = {
         email: string;
@@ -32,7 +34,7 @@ export function LoginPage() {
     
     const onSubmit = async (formData : LoginValues) => {
         console.log(formData);
-        
+        setIsLoading(true);
         // 1: submit email and password and receive user and session data
         const { data ,error } = await supabase.auth.signInWithPassword({
         email: formData.email,
@@ -41,6 +43,7 @@ export function LoginPage() {
         
         // 2: if there is an error signing in, show notification
         if (error) {
+            setIsLoading(false);
             console.error('Sign-in Error:', error);
             notifications.show({
                 title: 'Error signing in',
@@ -49,15 +52,16 @@ export function LoginPage() {
             });
             return; 
         }
-
+        
+        setIsLoading(false);
         console.log(data);
         notifications.show({
             title: 'Success signing up',
             message: 'You have successfully logged in',
             color: 'green',
         })
+
         jumpTo('/calendar');
-        
     }  
     
   return (
@@ -114,9 +118,12 @@ export function LoginPage() {
             </Anchor>
         </Group>
 
-        <Button type="submit" fullWidth mt="xl" radius="md">
-            Sign in
-        </Button>
+        <Button 
+            type="submit" 
+            fullWidth mt="xl" 
+            radius="md"
+            loading={isLoading}
+        > Sign in </Button>
         
         </Paper>
     </form>

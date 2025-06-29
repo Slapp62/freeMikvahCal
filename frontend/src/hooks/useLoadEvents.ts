@@ -4,11 +4,11 @@ import useZStore from "../Zstore.ts";
 import { ICalendarEvent } from "../Types_Interfaces.ts";
 
 const useLoadEvents = () => {
-    
     const events = useZStore((state) => state.events);
     const setEvents = useZStore((state) => state.setEvents);
     const refetchFlag = useZStore((state) => state.refetchFlag);
-   
+    
+
     useEffect(() => {
         const fetchEvents = async () => {
             const {data: periods, error: periodsError} = await supabase
@@ -30,14 +30,15 @@ const useLoadEvents = () => {
             }
             
             const periodEvents = periods?.flatMap((period) => {
-                //const onahLabel = period.onah === 'day' ? 'Before Sunset' : 'After Sunset';
+                const onahTime = period.onah === 'day' ? `Day` : 'Night';
                 const events = [
                     {
                         id: `${period.id}-start`,
-                        title: `🩸 Night`,
+                        title: `🩸 ${onahTime}`,
                         start: period.start_date,
                         groupID: period.id,
                         className: 'period-start',
+                        allDay: false,
                     },
                 ];
 
@@ -48,47 +49,26 @@ const useLoadEvents = () => {
                         start: period.hefsek_date,
                         groupID: period.id,
                         className: 'hefsek',
+                        allDay: false,
                     })
                 }
                 return events
             })
 
             const onahEvents= onahs.map((onah) => {
-                if (onah.type === 'beinonit_30') {
-                    return {
-                        id: `${onah.period_id}-beinonit_30`,
-                        title: `Onah Beinonit`,
-                        start: onah.onah_date,
-                        groupID: onah.period_id,
-                        className: 'onah',
-                    }
-                } else if (onah.type === 'haflagah') {
-                    return {
-                        id: `${onah.period_id}-haflagah`,
-                        title: `Onah Haflagah`,
-                        start: onah.onah_date,
-                        groupID: onah.period_id,
-                        className: 'onah',
-                    }
-                } else if (onah.type === 'hachodesh') {
-                    return {
-                        id: `${onah.period_id}-hachodesh`,
-                        title: `Onah Hachodesh`,
-                        start: onah.onah_date,
-                        groupID: onah.period_id,
-                        className: 'onah',
-                    }
-                } else if (onah.type === 'beinonit_31') {
-                    return {
-                        id: `${onah.period_id}-beinonit_31`,
-                        title: `Onah Ohr Zaruah`,
-                        start: onah.onah_date,
-                        groupID: onah.period_id,
-                        className: 'onah',
-                    }
-                };
-
-                return events
+                const onahIcon = onah.onah_time === 'day' ? `☀️` : '🌜';
+                const onahTime = new Date(onah.onah_date).toLocaleString();
+               
+                console.log('onah', onahTime);
+                return {
+                    id: `${onah.period_id}-${onah.type}`,
+                    title: `${onahIcon} ${onah.type}`,
+                    start: onah.onah_date,
+                    groupID: onah.period_id,
+                    className: 'onah',
+                    
+                }
+                
             })
             console.log('onahEvents', onahEvents);
             

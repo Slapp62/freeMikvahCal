@@ -5,6 +5,7 @@ interface ICalendarEvent {
     start: any,
     groupID?: any
     className?: string
+    allDay?: boolean
 }
 
 interface IPeriodData {

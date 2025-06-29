@@ -1,6 +1,7 @@
 import {
   Box, Burger, Button, Divider, Drawer, Flex, Text, Group, ScrollArea,
   useMantineColorScheme,
+  ActionIcon,
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import classes from './Header.module.css';
@@ -10,6 +11,7 @@ import clsx from 'clsx';
 import { Link, useNavigate } from 'react-router-dom';
 import { supabase } from '../../lib/supabaseClient';
 import useStore from '../../Zstore.ts';
+import { IconSettings } from '@tabler/icons-react';
 
   
   export function Header() {
@@ -33,7 +35,7 @@ import useStore from '../../Zstore.ts';
     return (
       <Box className={clsx(classes.navbarTop)}>
         <header className={clsx(colorScheme === 'light' ? classes.navbarLight : classes.navbarDark, classes.header)}>
-        <Flex justify="space-between" h='100%' py={10} w='85%' mx='auto'>
+        <Flex justify="space-between" align="center" h='100%' py={10} w='85%' mx='auto'>
 
             <Group visibleFrom="md" gap={5}>
               <Link  to="/" className={classes.link}>
@@ -61,6 +63,9 @@ import useStore from '../../Zstore.ts';
               </Group>
 
               <Group >
+                <ActionIcon variant='default' size={35}>
+                    <IconSettings/>
+                </ActionIcon>
                 <LightDarkToggle />
                 <Burger opened={drawerOpened} onClick={toggleDrawer} hiddenFrom="md" />
               </Group>

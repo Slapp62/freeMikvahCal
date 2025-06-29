@@ -1,15 +1,5 @@
-import { Button, Card, Container, createTheme, Paper, rem, Select, Title, virtualColor } from "@mantine/core";
+import { Button, Card, createTheme, Paper, rem, Select, Title, virtualColor } from "@mantine/core";
 import type { MantineThemeOverride } from "@mantine/core";
-
-const CONTAINER_SIZES: Record<string, string> = {
-  xxs: rem("200px"),
-  xs: rem("300px"),
-  sm: rem("400px"),
-  md: rem("500px"),
-  lg: rem("600px"),
-  xl: rem("1400px"),
-  xxl: rem("1600px"),
-};
 
 export const myTheme: MantineThemeOverride = createTheme({
   fontFamily: "Raleway, sans-serif",
@@ -58,17 +48,7 @@ export const myTheme: MantineThemeOverride = createTheme({
 
   components: {
     /** Put your mantine component override here */
-    Container: Container.extend({
-      vars: (_, { size, fluid }) => ({
-        root: {
-          "--container-size": fluid
-            ? "100%"
-            : size !== undefined && size in CONTAINER_SIZES
-              ? CONTAINER_SIZES[size]
-              : rem(size),
-        },
-      }),
-    }),
+    
     Paper: Paper.extend({
       defaultProps: {
         p: "md",
@@ -81,7 +61,6 @@ export const myTheme: MantineThemeOverride = createTheme({
     Button: Button.extend({
       defaultProps: {
         radius: "sm",
-        size: "md",
         color: "primary",
         fw: 800,
       },
