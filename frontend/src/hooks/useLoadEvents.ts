@@ -2,10 +2,11 @@ import { useEffect } from "react";
 import { supabase } from "../lib/supabaseClient.ts";
 import useZStore from "../Zstore.ts";
 import { ICalendarEvent } from "../Types_Interfaces.ts";
+import _ from "lodash";
 
 const useLoadEvents = () => {
-    const events = useZStore((state) => state.events);
-    const setEvents = useZStore((state) => state.setEvents);
+    const zCalEvents = useZStore((state) => state.events);
+    const setZCalEvents = useZStore((state) => state.setEvents);
     const refetchFlag = useZStore((state) => state.refetchFlag);
     
 
@@ -28,7 +29,8 @@ const useLoadEvents = () => {
                 console.error("Error fetching onahs:", onahsError);
                 return;
             }
-            
+            console.log('onahs', onahs);
+
             const periodEvents = periods?.flatMap((period) => {
                 const periodIcon = period.onah === 'day' ? `☀️` : '🌜';
                 const onahTime = period.onah === 'day' ? `Day` : 'Night';
@@ -57,44 +59,56 @@ const useLoadEvents = () => {
             })
 
             const onahEvents= onahs.flatMap((onah) => {
-                const onahIcon = onah.onah_day_night === 'day' ? `☀️` : '🌜';
-                const onahOz_Icon = onah.onah_day_night === 'day' ? `🌜` : '☀️';
                 const onahTime = new Date(onah.onah_start).toLocaleString();
                
                 console.log('onah', onahTime);
                 const events = [
                     {
                         id: `${onah.period_id}-${onah.type}`,
-                        title: `${onahIcon} ${onah.type}`,
+                        title: `${onah.type}`,
                         start: onah.onah_start,
                         groupID: onah.period_id,
-                        className: 'onah',
-                        allDay: false,
                     }
                 ]
 
                 if (onah.onahOz_start){
                     events.push({
                         id: `${onah.period_id}-${onah.type}-OZ`,
-                        title: `${onahOz_Icon} ${onah.type}-OZ`,
+                        title: `${onah.type}-OZ`,
                         start: onah.onahOz_start,
                         groupID: onah.period_id,
-                        className: 'onah',
-                        allDay: false,
                     })
                 }
                 return events
                 
             })
-            console.log('onahEvents', onahEvents);
             
-            setEvents([...periodEvents as ICalendarEvent[], ...onahEvents as ICalendarEvent[]]);
+            const groupedObjectEvents = _.groupBy(onahEvents, 'start');
+            const groupedArrayEvents = Object.entries(groupedObjectEvents).map((item) =>{
+                const startTime = item[0];
+                const eventsAtSameTime = item[1];
+                
+                const combinedTitle = eventsAtSameTime.map(event => event.title).join(' & ');
+                const onahIcon = eventsAtSameTime[0].start.endsWith('00:00:00') ? `☀️` : '🌜';
+            
+                return {
+                    id: `${eventsAtSameTime[0].id}-${combinedTitle}`,
+                    title: `${onahIcon} ${combinedTitle}`,
+                    start: startTime,
+                    groupID: eventsAtSameTime[0].id,
+                    className: 'onah',
+                    allDay: false,
+                }
+            })
+            
+            
+            setZCalEvents([...periodEvents as ICalendarEvent[], ...groupedArrayEvents as ICalendarEvent[]]);
         }
 
         fetchEvents();
     }, [refetchFlag]);
 
-    return events
+    return zCalEvents
 }
 
 export default useLoadEvents

@@ -1,14 +1,16 @@
 import { Controller, useForm,  } from "react-hook-form";
-import { Button, Checkbox, Paper, PasswordInput, Select, Stack, TextInput, Title } from "@mantine/core";
+import { Autocomplete, Button, Checkbox, Paper, PasswordInput, Select, Stack, TextInput, Title } from "@mantine/core";
 import { supabase } from "../lib/supabaseClient";
 import '@mantine/notifications/styles.css';
 import { notifications } from "@mantine/notifications";
+import locations from "../data/locations";
 
 const RegisterPage = () => {
     type RegisterValues = {
         email: string;
         password: string;
         confirmPassword: string;
+        city: string;
         ethnicity: string;
         chumrot: {
             onat_ohr_zarua: boolean,
@@ -40,12 +42,17 @@ const RegisterPage = () => {
             });
             return; 
         }
-
-            // 3: if user does not exist, insert rest of data into table
+        
+        
+        // 3: if user does not exist, insert rest of data into table
         if (data.user) {
+            const locationInfo = locations.find((location) => location.value === formData.city);
+            
             const { error: insertError } = await supabase.from("user_info").insert({
                 id: data.user.id,
                 ethnicity: formData.ethnicity,
+                latitude: locationInfo?.lat,
+                longitude: locationInfo?.lng,
                 chumrot: {
                     onat_ohr_zarua: formData.chumrot.onat_ohr_zarua,
                     beinonit_30_31: formData.chumrot.beinonit_30_31
@@ -131,6 +138,22 @@ const RegisterPage = () => {
             />
 
             <Controller
+                name = "city"
+                control = {control}
+                render={({ field }) => (
+                   <Autocomplete
+                        label='City'
+                        description="Choosing a city allows to provide accurate halachic times"
+                        placeholder="Enter a city name"
+                        limit={5}
+                        data={locations}
+                        selectFirstOptionOnChange={true}
+                        {...field}    
+                    /> 
+                )}
+            />
+
+            <Controller
                 name = "ethnicity"
                 control = {control}
                 render={({ field }) => (
@@ -138,7 +161,7 @@ const RegisterPage = () => {
                         label="Jewish Ethnicity"
                         placeholder="Pick one"
                         data={[
-                            { value: 'ashkenazi', label: 'ashkenazi' },
+                            { value: 'ashkenazi', label: 'Ashkenazi' },
                             { value: 'sephardi', label: 'Sephardi' },
                             { value: 'teimani', label: 'Teimani' },
                             { value: 'other', label: 'Other' },
