@@ -75,6 +75,10 @@
     background-color:rgb(37, 73, 216);
 }
 
+.calendar .fc-event.onah {
+    background-color:rgb(120, 30, 179);
+}
+
 /* When an event is hovered or selected */
 .calendar .fc-event:hover {
     background-color:rgb(213, 105, 23);

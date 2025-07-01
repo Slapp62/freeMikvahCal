@@ -22,8 +22,8 @@ const useLoadEvents = () => {
 
             const {data: onahs, error: onahsError} = await supabase
                 .from("onahs")
-                .select('period_id, onah_date, onah_time, type')
-                .order('onah_date', { ascending: false });
+                .select('period_id, onah_start, onah_day_night, type')
+                .order('onah_start', { ascending: false });
             if (onahsError) {
                 console.error("Error fetching onahs:", onahsError);
                 return;
@@ -56,17 +56,17 @@ const useLoadEvents = () => {
             })
 
             const onahEvents= onahs.map((onah) => {
-                const onahIcon = onah.onah_time === 'day' ? `☀️` : '🌜';
-                const onahTime = new Date(onah.onah_date).toLocaleString();
+                const onahIcon = onah.onah_day_night === 'day' ? `☀️` : '🌜';
+                const onahTime = new Date(onah.onah_start).toLocaleString();
                
                 console.log('onah', onahTime);
                 return {
                     id: `${onah.period_id}-${onah.type}`,
                     title: `${onahIcon} ${onah.type}`,
-                    start: onah.onah_date,
+                    start: onah.onah_start,
                     groupID: onah.period_id,
                     className: 'onah',
-                    
+                    allDay: false,
                 }
                 
             })
