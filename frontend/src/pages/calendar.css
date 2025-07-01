@@ -60,11 +60,10 @@
   border-color: #0097a7; /* Darker cyan border */
   color: white; /* White text for events */
   font-size: 1em;
-  padding: 2px 5px;
   border-radius: 4px;
   margin-bottom: 2px;
-  opacity: 1; /* Small space between events */
   text-wrap: wrap;
+  width: 100%;
 }
 
 .calendar .fc-event.period-start {

@@ -22,7 +22,7 @@ const useLoadEvents = () => {
 
             const {data: onahs, error: onahsError} = await supabase
                 .from("onahs")
-                .select('period_id, onah_start, onah_day_night, type')
+                .select('period_id, onah_start, onah_day_night, type, onahOz_start')
                 .order('onah_start', { ascending: false });
             if (onahsError) {
                 console.error("Error fetching onahs:", onahsError);
@@ -30,15 +30,16 @@ const useLoadEvents = () => {
             }
             
             const periodEvents = periods?.flatMap((period) => {
+                const periodIcon = period.onah === 'day' ? `☀️` : '🌜';
                 const onahTime = period.onah === 'day' ? `Day` : 'Night';
                 const events = [
                     {
                         id: `${period.id}-start`,
-                        title: `🩸 ${onahTime}`,
+                        title: `🩸 New Period - ${periodIcon} ${onahTime}`,
                         start: period.start_date,
                         groupID: period.id,
                         className: 'period-start',
-                        allDay: false,
+                        
                     },
                 ];
 
@@ -49,25 +50,40 @@ const useLoadEvents = () => {
                         start: period.hefsek_date,
                         groupID: period.id,
                         className: 'hefsek',
-                        allDay: false,
+                        
                     })
                 }
                 return events
             })
 
-            const onahEvents= onahs.map((onah) => {
+            const onahEvents= onahs.flatMap((onah) => {
                 const onahIcon = onah.onah_day_night === 'day' ? `☀️` : '🌜';
+                const onahOz_Icon = onah.onah_day_night === 'day' ? `🌜` : '☀️';
                 const onahTime = new Date(onah.onah_start).toLocaleString();
                
                 console.log('onah', onahTime);
-                return {
-                    id: `${onah.period_id}-${onah.type}`,
-                    title: `${onahIcon} ${onah.type}`,
-                    start: onah.onah_start,
-                    groupID: onah.period_id,
-                    className: 'onah',
-                    allDay: false,
+                const events = [
+                    {
+                        id: `${onah.period_id}-${onah.type}`,
+                        title: `${onahIcon} ${onah.type}`,
+                        start: onah.onah_start,
+                        groupID: onah.period_id,
+                        className: 'onah',
+                        allDay: false,
+                    }
+                ]
+
+                if (onah.onahOz_start){
+                    events.push({
+                        id: `${onah.period_id}-${onah.type}-OZ`,
+                        title: `${onahOz_Icon} ${onah.type}-OZ`,
+                        start: onah.onahOz_start,
+                        groupID: onah.period_id,
+                        className: 'onah',
+                        allDay: false,
+                    })
                 }
+                return events
                 
             })
             console.log('onahEvents', onahEvents);
