@@ -47,16 +47,18 @@ const RegisterPage = () => {
         // 3: if user does not exist, insert rest of data into table
         if (data.user) {
             const locationInfo = locations.find((location) => location.value === formData.city);
-            
+
             const { error: insertError } = await supabase.from("user_info").insert({
                 id: data.user.id,
                 ethnicity: formData.ethnicity,
-                latitude: locationInfo?.lat,
-                longitude: locationInfo?.lng,
                 chumrot: {
                     onat_ohr_zarua: formData.chumrot.onat_ohr_zarua,
                     beinonit_30_31: formData.chumrot.beinonit_30_31
-                }
+                },
+
+                city: formData.city,
+                latitude: locationInfo?.lat,
+                longitude: locationInfo?.lng
             });
             
             // 4: if there is an error inserting data, show notification
