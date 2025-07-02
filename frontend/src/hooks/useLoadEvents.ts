@@ -101,7 +101,7 @@ const useLoadEvents = () => {
                 }
             })
             
-            
+            //
             setZCalEvents([...periodEvents as ICalendarEvent[], ...groupedArrayEvents as ICalendarEvent[]]);
         }
 
