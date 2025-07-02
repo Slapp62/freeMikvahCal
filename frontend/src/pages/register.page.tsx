@@ -1,5 +1,5 @@
 import { Controller, useForm,  } from "react-hook-form";
-import { Autocomplete, Button, Checkbox, Paper, PasswordInput, Select, Stack, TextInput, Title } from "@mantine/core";
+import { Autocomplete, Button, Checkbox, Fieldset, Group, Paper, PasswordInput, Select, Stack, TextInput, Title } from "@mantine/core";
 import { supabase } from "../lib/supabaseClient";
 import '@mantine/notifications/styles.css';
 import { notifications } from "@mantine/notifications";
@@ -12,20 +12,24 @@ const RegisterPage = () => {
         confirmPassword: string;
         city: string;
         ethnicity: string;
+        preferences: {
+            reminders: boolean,
+        };
         chumrot: {
-            onat_ohr_zarua: boolean,
-            beinonit_30_31: boolean
+            beinonit_30_31: boolean,
+            onat_ohr_zarua: boolean
         };
     }
 
     const {register, control, handleSubmit, reset, watch, formState: {errors}} = useForm<RegisterValues>(
         {
-            mode: 'onBlur',
+            mode: 'onChange',
         }
     );
 
     const onSubmit = async (formData : RegisterValues) => {
-
+        console.log('form data:', formData);
+        
         // 1: submit email and password and receive user and session data
         const { data ,error } = await supabase.auth.signUp({
             email: formData.email,
@@ -48,19 +52,24 @@ const RegisterPage = () => {
         if (data.user) {
             const locationInfo = locations.find((location) => location.value === formData.city);
 
-            const { error: insertError } = await supabase.from("user_info").insert({
+            const { data: userData, error: insertError } = await supabase.from("user_info").insert({
                 id: data.user.id,
                 ethnicity: formData.ethnicity,
                 chumrot: {
                     onat_ohr_zarua: formData.chumrot.onat_ohr_zarua,
                     beinonit_30_31: formData.chumrot.beinonit_30_31
                 },
-
-                city: formData.city,
+                
                 latitude: locationInfo?.lat,
-                longitude: locationInfo?.lng
+                longitude: locationInfo?.lng,
+                city: formData.city,
+
+                preferences: {
+                    reminders: formData.preferences.reminders
+                },
             });
-            
+            console.log('user data:', userData);
+
             // 4: if there is an error inserting data, show notification
             if (insertError) {
                 console.error('Error inserting profile data:', insertError);
@@ -94,7 +103,7 @@ const RegisterPage = () => {
             <Stack w='100%' mx='auto' gap={20}>
             <TextInput
             label="Email"
-            placeholder="you@mantine.dev"
+            placeholder="email@gmail.com"
             required
             error={errors.email?.message}
             {...register("email", {
@@ -173,8 +182,22 @@ const RegisterPage = () => {
                 )}
             />
 
-            <Checkbox label="Onat Ohr Zarua" {...register("chumrot.onat_ohr_zarua")}/>
-            <Checkbox label="Onah Beinonit on 30 & 31" {...register("chumrot.beinonit_30_31")}/>
+            <Group justify="space-between" align="flex-start">
+                <Fieldset legend="Special Onahs" w='45%'>
+                    <Stack>
+                        <Checkbox label="Onat Ohr Zarua" {...register("chumrot.onat_ohr_zarua", {
+                            setValueAs: (value) => !!value})}/>
+                        <Checkbox label="Onah Beinonit on day 31" {...register("chumrot.beinonit_30_31", {
+                            setValueAs: (value) => !!value})}/>
+                    </Stack>
+                </Fieldset>
+
+                <Fieldset legend="Preferences" w='45%'>
+                    <Stack>
+                        <Checkbox label="Email Reminders" {...register("preferences.reminders")}/>
+                    </Stack>
+                </Fieldset>
+            </Group>
 
             <Button type="submit">Register</Button>
             </Stack>
