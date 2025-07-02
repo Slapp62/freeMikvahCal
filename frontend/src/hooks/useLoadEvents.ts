@@ -86,7 +86,7 @@ const useLoadEvents = () => {
             const groupedObjectEvents = _.groupBy(onahEvents, 'start');
             const groupedArrayEvents = Object.entries(groupedObjectEvents).map((item) =>{
                 const startTime = item[0];
-                const eventsAtSameTime = item[1];
+                const eventsAtSameTime : ICalendarEvent[] = item[1];
                 
                 const combinedTitle = eventsAtSameTime.map(event => event.title).join(' & ');
                 const onahIcon = eventsAtSameTime[0].start.endsWith('00:00:00') ? `☀️` : '🌜';
