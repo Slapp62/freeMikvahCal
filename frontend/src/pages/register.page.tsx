@@ -1,16 +1,14 @@
 import { Controller, useForm,  } from "react-hook-form";
-import { Autocomplete, Button, Checkbox, Fieldset, Group, Paper, PasswordInput, Select, Stack, TextInput, Title } from "@mantine/core";
-import { supabase } from "../lib/supabaseClient";
+import { Button, Checkbox, Fieldset, Group, Paper, PasswordInput, Select, Stack, TextInput, Title } from "@mantine/core";
+import { supabase } from "../lib/supabaseClient.ts";
 import '@mantine/notifications/styles.css';
 import { notifications } from "@mantine/notifications";
-import locations from "../data/locations";
 
 const RegisterPage = () => {
     type RegisterValues = {
         email: string;
         password: string;
         confirmPassword: string;
-        city: string;
         ethnicity: string;
         preferences: {
             reminders: boolean,
@@ -29,6 +27,8 @@ const RegisterPage = () => {
 
     const onSubmit = async (formData : RegisterValues) => {
         console.log('form data:', formData);
+
+        
         
         // 1: submit email and password and receive user and session data
         const { data ,error } = await supabase.auth.signUp({
@@ -47,23 +47,17 @@ const RegisterPage = () => {
             return; 
         }
         
-        
         // 3: if user does not exist, insert rest of data into table
         if (data.user) {
-            const locationInfo = locations.find((location) => location.value === formData.city);
-
             const { data: userData, error: insertError } = await supabase.from("user_info").insert({
                 id: data.user.id,
+                
                 ethnicity: formData.ethnicity,
                 chumrot: {
                     onat_ohr_zarua: formData.chumrot.onat_ohr_zarua,
                     beinonit_30_31: formData.chumrot.beinonit_30_31
                 },
                 
-                latitude: locationInfo?.lat,
-                longitude: locationInfo?.lng,
-                city: formData.city,
-
                 preferences: {
                     reminders: formData.preferences.reminders
                 },
@@ -146,22 +140,6 @@ const RegisterPage = () => {
                     validate: (value) => value === watch('password') || "Passwords do not match",
                     required: "Confirmation is required",
                 })}
-            />
-
-            <Controller
-                name = "city"
-                control = {control}
-                render={({ field }) => (
-                   <Autocomplete
-                        label='City'
-                        description="Choosing a city allows to provide accurate halachic times"
-                        placeholder="Enter a city name"
-                        limit={5}
-                        data={locations}
-                        selectFirstOptionOnChange={true}
-                        {...field}    
-                    /> 
-                )}
             />
 
             <Controller

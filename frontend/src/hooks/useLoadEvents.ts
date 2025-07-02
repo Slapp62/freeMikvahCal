@@ -96,7 +96,7 @@ const useLoadEvents = () => {
                 const eventsAtSameTime = item[1];
                 
                 const combinedTitle = eventsAtSameTime.map(event => event.title).join(' & ');
-                const onahIcon = eventsAtSameTime[0].start.endsWith('00:00:00') ? `☀️` : '🌜';
+                const onahIcon = eventsAtSameTime[0].start.endsWith('12:00:00') ? `☀️` : '🌜';
             
                 return {
                     id: `${eventsAtSameTime[0].id}-${combinedTitle}`,
@@ -104,7 +104,7 @@ const useLoadEvents = () => {
                     start: startTime,
                     groupID: eventsAtSameTime[0].id,
                     className: 'onah',
-                    allDay: false,
+                    allDay: false
                 }
             })
             

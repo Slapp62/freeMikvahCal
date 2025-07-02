@@ -85,6 +85,7 @@ export default function CalendarPage() {
             height='auto'
             eventDisplay='auto'
             timeZone='local'
+            displayEventTime={false}
         />
         <Group bd={'2px solid rgb(207, 207, 207)'} px={15} py={5}>
             <Box>🩸 New Period </Box>
