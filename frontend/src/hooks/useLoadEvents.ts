@@ -2,7 +2,6 @@ import { useEffect } from "react";
 import { supabase } from "../lib/supabaseClient.ts";
 import useZStore from "../Zstore.ts";
 import { ICalendarEvent } from "../Types_Interfaces.ts";
-import { groupBy } from "lodash";
 
 const useLoadEvents = () => {
     const zCalEvents = useZStore((state) => state.events);
@@ -83,7 +82,15 @@ const useLoadEvents = () => {
                 
             })
             
-            const groupedObjectEvents: Record<string, ICalendarEvent[]> = groupBy(onahEvents, 'start');
+            const groupedObjectEvents = onahEvents.reduce((acc, onah) => {
+                const key = onah.start;
+                if (!acc[key]) {
+                    acc[key] = []
+                }
+                acc[key].push(onah)
+                return acc
+            }, {} as Record<string, ICalendarEvent[]>) ;
+
             const groupedArrayEvents = Object.entries(groupedObjectEvents).map((item) =>{
                 const startTime = item[0];
                 const eventsAtSameTime = item[1];
