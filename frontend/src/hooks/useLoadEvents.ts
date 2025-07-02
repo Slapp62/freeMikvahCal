@@ -31,7 +31,7 @@ const useLoadEvents = () => {
             }
             console.log('onahs', onahs);
 
-            const periodEvents = periods?.flatMap((period) => {
+            const periodEvents : ICalendarEvent[] = periods?.flatMap((period) => {
                 const periodIcon = period.onah === 'day' ? `☀️` : '🌜';
                 const onahTime = period.onah === 'day' ? `Day` : 'Night';
                 const events = [
@@ -58,7 +58,7 @@ const useLoadEvents = () => {
                 return events
             })
 
-            const onahEvents= onahs.flatMap((onah) => {
+            const onahEvents : ICalendarEvent[] = onahs.flatMap((onah) => {
                 const onahTime = new Date(onah.onah_start).toLocaleString();
                
                 console.log('onah', onahTime);
@@ -83,10 +83,10 @@ const useLoadEvents = () => {
                 
             })
             
-            const groupedObjectEvents = _.groupBy(onahEvents, 'start');
+            const groupedObjectEvents: Record<string, ICalendarEvent[]> = _.groupBy(onahEvents, 'start');
             const groupedArrayEvents = Object.entries(groupedObjectEvents).map((item) =>{
                 const startTime = item[0];
-                const eventsAtSameTime : ICalendarEvent[] = item[1];
+                const eventsAtSameTime = item[1];
                 
                 const combinedTitle = eventsAtSameTime.map(event => event.title).join(' & ');
                 const onahIcon = eventsAtSameTime[0].start.endsWith('00:00:00') ? `☀️` : '🌜';
