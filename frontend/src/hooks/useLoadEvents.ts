@@ -57,10 +57,7 @@ const useLoadEvents = () => {
                 return events
             })
 
-            const onahEvents : ICalendarEvent[] = onahs.flatMap((onah) => {
-                const onahTime = new Date(onah.onah_start).toLocaleString();
-               
-                console.log('onah', onahTime);
+            const onahEvents : ICalendarEvent[] = onahs.flatMap((onah) => {               
                 const events = [
                     {
                         id: `${onah.period_id}-${onah.type}`,
@@ -94,14 +91,19 @@ const useLoadEvents = () => {
             const groupedArrayEvents = Object.entries(groupedObjectEvents).map((item) =>{
                 const startTime = item[0];
                 const eventsAtSameTime = item[1];
-                
+
+                const converted_start = new Date(startTime);
+                const endTime = new Date(converted_start.getTime() + 12 * 60 * 60 * 1000).toISOString();
+                console.log('start time', startTime);
+                console.log('end time', endTime);
                 const combinedTitle = eventsAtSameTime.map(event => event.title).join(' & ');
-                const onahIcon = eventsAtSameTime[0].start.endsWith('12:00:00') ? `☀️` : '🌜';
+                const onahIcon = eventsAtSameTime[0].start.endsWith('00:00:00') ? `☀️` : '🌜';
             
                 return {
                     id: `${eventsAtSameTime[0].id}-${combinedTitle}`,
                     title: `${onahIcon} ${combinedTitle}`,
                     start: startTime,
+                    end: endTime,
                     groupID: eventsAtSameTime[0].id,
                     className: 'onah',
                     allDay: false
