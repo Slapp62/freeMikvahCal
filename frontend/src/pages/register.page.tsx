@@ -3,6 +3,7 @@ import { Button, Checkbox, Fieldset, Group, Paper, PasswordInput, Select, Stack,
 import { supabase } from "../lib/supabaseClient.ts";
 import '@mantine/notifications/styles.css';
 import { notifications } from "@mantine/notifications";
+import { userApi } from "../services/localApi.ts";
 
 const RegisterPage = () => {
     type RegisterValues = {
@@ -28,13 +29,22 @@ const RegisterPage = () => {
     const onSubmit = async (formData : RegisterValues) => {
         console.log('form data:', formData);
 
-        
-        
         // 1: submit email and password and receive user and session data
         const { data ,error } = await supabase.auth.signUp({
             email: formData.email,
             password: formData.password,
         });
+
+        const response = userApi.create({
+            email: formData.email,
+            password: formData.password,
+        });
+
+        if (response) {
+            console.log('response:', response)
+        } else {
+            console.error('no response from api');
+        }
         
         // 2: if there is an error signing up, show notification
         if (error) {
