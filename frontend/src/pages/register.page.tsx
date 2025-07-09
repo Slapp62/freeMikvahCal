@@ -1,24 +1,26 @@
 import { Controller, useForm,  } from "react-hook-form";
 import { Button, Checkbox, Fieldset, Group, Paper, PasswordInput, Select, Stack, TextInput, Title } from "@mantine/core";
-import { supabase } from "../lib/supabaseClient.ts";
 import '@mantine/notifications/styles.css';
 import { notifications } from "@mantine/notifications";
-import { userApi } from "../services/localApi.ts";
+import { userAuthApi } from "../services/localApi.ts";
+import locations from "../data/locations.ts";
 
-const RegisterPage = () => {
-    type RegisterValues = {
+type RegisterValues = {
         email: string;
         password: string;
         confirmPassword: string;
-        ethnicity: string;
+        ethnicity: 'ashkenazi' | 'sephardi' | 'teimani' | 'other';
+        location: string;
         preferences: {
             reminders: boolean,
         };
-        chumrot: {
+        special_onahs: {
             beinonit_30_31: boolean,
             onat_ohr_zarua: boolean
         };
     }
+
+const RegisterPage = () => {
 
     const {register, control, handleSubmit, reset, watch, formState: {errors}} = useForm<RegisterValues>(
         {
@@ -29,71 +31,45 @@ const RegisterPage = () => {
     const onSubmit = async (formData : RegisterValues) => {
         console.log('form data:', formData);
 
-        // 1: submit email and password and receive user and session data
-        const { data ,error } = await supabase.auth.signUp({
-            email: formData.email,
-            password: formData.password,
-        });
+        const location = locations.find((loc) => loc.value === formData.location);
 
-        const response = userApi.create({
-            email: formData.email,
-            password: formData.password,
-        });
+        try {
+            const response = await userAuthApi.register({
+                email: formData.email,
+                password: formData.password,
+                ethnicity: formData.ethnicity,
+                location: {
+                    city: location?.value,
+                    geonameId: location?.geonameId,
+                    lat: location?.lat,
+                    lng: location?.lng,
+                    timezone: location?.timezone
+                },
+                special_onahs: {
+                    onat_ohrZarua: formData.special_onahs.onat_ohr_zarua,
+                    beinonit_on31: formData.special_onahs.beinonit_30_31
+                },
+                preferences: {
+                    email_reminders: formData.preferences.reminders
+                },
+            });
 
-        if (response) {
-            console.log('response:', response)
-        } else {
-            console.error('no response from api');
-        }
-        
-        // 2: if there is an error signing up, show notification
-        if (error) {
-            console.error('Sign-up Error:', error);
+            if (response) {
+                console.log('Registeration success:', response)
+                notifications.show({
+                    title: 'Sign up successful!',
+                    message: 'Please check your email to confirm your registration.',
+                    color: 'green',
+                });
+                reset();
+            } 
+        } catch (error : any) {
+            console.error('Error registering user:', error);
             notifications.show({
                 title: 'Error signing up',
                 message: error.message,
                 color: 'red',
             });
-            return; 
-        }
-        
-        // 3: if user does not exist, insert rest of data into table
-        if (data.user) {
-            const { data: userData, error: insertError } = await supabase.from("user_info").insert({
-                id: data.user.id,
-                
-                ethnicity: formData.ethnicity,
-                chumrot: {
-                    onat_ohr_zarua: formData.chumrot.onat_ohr_zarua,
-                    beinonit_30_31: formData.chumrot.beinonit_30_31
-                },
-                
-                preferences: {
-                    reminders: formData.preferences.reminders
-                },
-            });
-            console.log('user data:', userData);
-
-            // 4: if there is an error inserting data, show notification
-            if (insertError) {
-                console.error('Error inserting profile data:', insertError);
-                notifications.show({
-                    title: 'Error saving information',
-                    message: insertError.message,
-                    color: 'red',
-                });
-                return;
-            }
-
-            // 5: if data is inserted successfully, show notification
-            console.log(data.user, data.session);
-            notifications.show({
-                title: 'Sign up successful!',
-                message: 'Please check your email to confirm your registration.',
-                color: 'green',
-            });
-            reset();
-                
         }
     }
 
@@ -170,12 +146,29 @@ const RegisterPage = () => {
                 )}
             />
 
+            <Controller
+                name = "location"
+                control = {control}
+                render={({ field }) => (
+                    <Select
+                        label="City"
+                        placeholder="Pick one"
+                        data={locations.map((location) => ({
+                            label: location.value,
+                            value: location.value 
+                            })
+                        )}
+                        {...field}
+                    /> 
+                )}
+            />
+
             <Group justify="space-between" align="flex-start">
                 <Fieldset legend="Special Onahs" w='45%'>
                     <Stack>
-                        <Checkbox label="Onat Ohr Zarua" {...register("chumrot.onat_ohr_zarua", {
+                        <Checkbox label="Onat Ohr Zarua" {...register("special_onahs.onat_ohr_zarua", {
                             setValueAs: (value) => !!value})}/>
-                        <Checkbox label="Onah Beinonit on day 31" {...register("chumrot.beinonit_30_31", {
+                        <Checkbox label="Onah Beinonit on day 31" {...register("special_onahs.beinonit_30_31", {
                             setValueAs: (value) => !!value})}/>
                     </Stack>
                 </Fieldset>

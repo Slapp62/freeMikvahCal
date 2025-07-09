@@ -2,6 +2,7 @@ import {
   Box, Burger, Button, Divider, Drawer, Flex, Text, Group, ScrollArea,
   useMantineColorScheme,
   ActionIcon,
+  Image,
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import classes from './Header.module.css';
@@ -15,6 +16,7 @@ import { IconSettings } from '@tabler/icons-react';
 
   
   export function Header() {
+    const logo = '../../../public/logo-v1.png';
     const session = useStore((state) => state.session);
     const clearSession = useStore((state) => state.clearSession);
     const jumpTo = useNavigate();
@@ -36,8 +38,9 @@ import { IconSettings } from '@tabler/icons-react';
       <Box className={clsx(classes.navbarTop)}>
         <header className={clsx(colorScheme === 'light' ? classes.navbarLight : classes.navbarDark, classes.header)}>
         <Flex justify="space-between" align="center" h='100%' py={10} w='85%' mx='auto'>
-
-            <Group visibleFrom="md" gap={5}>
+            
+            <Group visibleFrom="md" gap={5} align='flex-end'>
+            <Image src={logo} alt="Logo" w={150} style={{objectFit: 'fill'}}/>
               <Link  to="/" className={classes.link}>
                 <Text fw={700}>Home</Text>
               </Link>

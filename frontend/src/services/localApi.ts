@@ -1,21 +1,12 @@
-interface User {
-  _id: string;
-  email: string;
-  password: string;
-  createdAt: string;
-}
-
-interface CreateUser {
-  email: string;
-  password: string;
-}
+import { IRegister } from "../types_interfaces.ts";
 
 const API_BASE_URL = 'http://localhost:5000/api';
 
-const apiRequest = async (endpoint: string, options = {}) => {
+// primary API request function
+const apiRequest = async (endpoint: string, content = {}) => {
   const response = await fetch(`${API_BASE_URL}${endpoint}`, {
     headers: { 'Content-Type': 'application/json' },
-    ...options,
+    ...content,
   });
   
   if (!response.ok) {
@@ -25,12 +16,15 @@ const apiRequest = async (endpoint: string, options = {}) => {
   return response.json();
 };
 
+// auth specific api functions
+export const userAuthApi = {
+  register: (userData: IRegister): Promise<{message: string, user: IRegister}> => apiRequest('/users/register', {
+    method: 'POST',
+    body: JSON.stringify(userData),
+  }),
+};
+
+// user specific api functions
 export const userApi = {
-  getAll: (): Promise<User[]> => apiRequest('/users'),
-  
-  create: (userData: CreateUser): Promise<User> => 
-    apiRequest('/users', {
-      method: 'POST',
-      body: JSON.stringify(userData),
-    }),
+  getAll: (): Promise<IRegister[]> => apiRequest('/users'),
 };
