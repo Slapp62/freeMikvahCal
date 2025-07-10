@@ -5,13 +5,12 @@ import { EventClickArg } from '@fullcalendar/core';
 import { Box, Group, Stack, Title, Text } from '@mantine/core';
 import './calendar.css';
 import CalendarEventModal from './newCalEvent.modal.tsx';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import useLoadEvents from '../hooks/useLoadEvents.ts';
 import useZStore from '../Zstore.ts/index.ts';
 import EditEventModal from './editCalEvent.modal.tsx';
 import { EventImpl } from '@fullcalendar/core/internal';
 import { useMediaQuery } from '@mantine/hooks';
-import { supabase } from '../lib/supabaseClient.ts';
 
 export default function CalendarPage() {
     const isMobile = useMediaQuery('(max-width: 700px)');
@@ -26,30 +25,6 @@ export default function CalendarPage() {
     const [eventModalOpened, setEventModalOpened] = useState(false);
     const closeEventModal = () => setEventModalOpened(false);
     const [selectedEvent, setSelectedEvent] = useState<EventImpl | null>(null);
-
-    useEffect(() => {
-        navigator.geolocation.getCurrentPosition((position) => {
-            const lat = position.coords.latitude;
-            const lon = position.coords.longitude;
-        
-            updateUserLocation(lat, lon);
-        });
-    
-        async function updateUserLocation(latitude: number, longitude: number) {
-            const {data : user} = await supabase.auth.getUser();
-            
-            if (user) {
-                const { error : locationError } = await supabase
-                .from("user_info").update({
-                    latitude: latitude,
-                    longitude: longitude,
-                })
-                .eq('id', user.user?.id);
-
-                if (locationError) console.log(locationError);
-            }
-        }
-    }, []);
 
     const handleDateClick = (arg: DateClickArg) => {
         const date = arg.date;

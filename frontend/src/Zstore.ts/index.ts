@@ -1,12 +1,12 @@
 import { create } from 'zustand'
-import { AuthSlice, createAuthSlice } from './authSlice';
+import { UserSlice, createUserSlice } from './userSlice';
 import { createEventSlice, EventSlice } from './eventSlice';
 import { CalendarSlice, createCalendarSlice } from './calendarSlice';
 
-type StoreState = AuthSlice & EventSlice & CalendarSlice;
+type StoreState = UserSlice & EventSlice & CalendarSlice;
 
 export const useZStore = create<StoreState>()((...args) => ({
-  ...createAuthSlice(...args),
+  ...createUserSlice(...args),
   ...createEventSlice(...args),
   ...createCalendarSlice(...args),
 }));

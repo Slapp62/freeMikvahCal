@@ -1,4 +1,4 @@
-import { IRegister } from "../types_interfaces.ts";
+import { IRegister } from '../types_interfaces';
 
 const API_BASE_URL = 'http://localhost:5000/api';
 
@@ -18,10 +18,18 @@ const apiRequest = async (endpoint: string, content = {}) => {
 
 // auth specific api functions
 export const userAuthApi = {
-  register: (userData: IRegister): Promise<{message: string, user: IRegister}> => apiRequest('/users/register', {
-    method: 'POST',
-    body: JSON.stringify(userData),
-  }),
+    register: (userData: IRegister): Promise<{message: string, user: IRegister}> => 
+        apiRequest('/users/register', {
+            method: 'POST',
+            body: JSON.stringify(userData),
+        }
+    ),
+
+    login: (loginInfo : {email: string, password: string}) : Promise<{message: string, token: string, user: IRegister}> => 
+        apiRequest('/users/login', {
+            method: `POST`,
+            body: JSON.stringify(loginInfo)
+        })
 };
 
 // user specific api functions

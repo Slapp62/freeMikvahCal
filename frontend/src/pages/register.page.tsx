@@ -1,5 +1,5 @@
 import { Controller, useForm,  } from "react-hook-form";
-import { Button, Checkbox, Fieldset, Group, Paper, PasswordInput, Select, Stack, TextInput, Title } from "@mantine/core";
+import { Autocomplete, Button, Checkbox, Fieldset, Group, Paper, PasswordInput, Select, Stack, TextInput, Title } from "@mantine/core";
 import '@mantine/notifications/styles.css';
 import { notifications } from "@mantine/notifications";
 import { userAuthApi } from "../services/localApi.ts";
@@ -150,7 +150,7 @@ const RegisterPage = () => {
                 name = "location"
                 control = {control}
                 render={({ field }) => (
-                    <Select
+                    <Autocomplete
                         label="City"
                         placeholder="Pick one"
                         data={locations.map((location) => ({
@@ -175,7 +175,8 @@ const RegisterPage = () => {
 
                 <Fieldset legend="Preferences" w='45%'>
                     <Stack>
-                        <Checkbox label="Email Reminders" {...register("preferences.reminders")}/>
+                        <Checkbox label="Email Reminders" {...register("preferences.reminders", {
+                            setValueAs: (value) => !!value})}/>
                     </Stack>
                 </Fieldset>
             </Group>

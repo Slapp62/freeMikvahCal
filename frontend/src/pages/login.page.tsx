@@ -13,13 +13,15 @@ import {
 import classes from './login.module.css';
 import { notifications } from '@mantine/notifications';
 import { useForm } from 'react-hook-form';
-import { supabase } from '../lib/supabaseClient';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
+import { userAuthApi } from '../services/localApi';
+import useZStore from '../Zstore.ts';
 
 export function LoginPage() {
     const jumpTo = useNavigate();
     const [isLoading, setIsLoading] = useState(false);
+    const setUser = useZStore((state) => state.setUser);
 
     type LoginValues = {
         email: string;
@@ -33,16 +35,22 @@ export function LoginPage() {
     );
     
     const onSubmit = async (formData : LoginValues) => {
-        console.log(formData);
         setIsLoading(true);
-        // 1: submit email and password and receive user and session data
-        const { data ,error } = await supabase.auth.signInWithPassword({
-        email: formData.email,
-        password: formData.password,
-        });
-        
-        // 2: if there is an error signing in, show notification
-        if (error) {
+        try {
+            const response = await userAuthApi.login(formData);
+            
+            sessionStorage.setItem('token', response.token)
+            setUser(response.user)
+
+            setIsLoading(false);
+            notifications.show({
+                title: 'Success signing up',
+                message: 'You have successfully logged in',
+                color: 'green',
+            })
+
+            jumpTo('/calendar');
+        } catch (error : any) {
             setIsLoading(false);
             console.error('Sign-in Error:', error);
             notifications.show({
@@ -50,18 +58,7 @@ export function LoginPage() {
                 message: error.message,
                 color: 'red',
             });
-            return; 
         }
-        
-        setIsLoading(false);
-        console.log(data);
-        notifications.show({
-            title: 'Success signing up',
-            message: 'You have successfully logged in',
-            color: 'green',
-        })
-
-        jumpTo('/calendar');
     }  
     
   return (

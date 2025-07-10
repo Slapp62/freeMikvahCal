@@ -10,30 +10,26 @@ import { LightDarkToggle } from './LightDarkToggle'
 //import { Logo } from './Logo';
 import clsx from 'clsx';
 import { Link, useNavigate } from 'react-router-dom';
-import { supabase } from '../../lib/supabaseClient';
 import useStore from '../../Zstore.ts';
 import { IconSettings } from '@tabler/icons-react';
 
   
   export function Header() {
     const logo = '../../../public/logo-v1.png';
-    const session = useStore((state) => state.session);
-    const clearSession = useStore((state) => state.clearSession);
+    const user = useStore((state) => state.user);
+    const clearUser = useStore((state) => state.clearUser);
     const jumpTo = useNavigate();
     const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] = useDisclosure(false);
     const { colorScheme } = useMantineColorScheme();
   
     const logoutHandler = async () => {
-        const { error } = await supabase.auth.signOut()
-        if (!error) {
-           clearSession();
-        } else {
-            console.error('Logout error:', error)
-        }
+        sessionStorage.removeItem('token');
+        clearUser();
         jumpTo('/');
     }
     
-
+    console.log('user', user);
+    
     return (
       <Box className={clsx(classes.navbarTop)}>
         <header className={clsx(colorScheme === 'light' ? classes.navbarLight : classes.navbarDark, classes.header)}>
@@ -49,7 +45,7 @@ import { IconSettings } from '@tabler/icons-react';
                 <Text fw={700}>About</Text>
               </Link>
 
-              {session && (
+              {user && (
               <Link to="/calendar" className={classes.link} >
                 <Text fw={700}>Calendar</Text>
               </Link>)}
@@ -57,12 +53,12 @@ import { IconSettings } from '@tabler/icons-react';
 
             <Group>
               <Group visibleFrom="xs">
-                {!session && ( <>
+                {!user && ( <>
                 <Button component={Link} to='/login' variant="outline">Login</Button>
                 <Button component={Link} to='/register'>Sign Up</Button>
                 </>)}
 
-                {session && <Button variant="outline" onClick={logoutHandler}>Logout</Button>}
+                {user && <Button variant="outline" onClick={logoutHandler}>Logout</Button>}
               </Group>
 
               <Group >
@@ -102,12 +98,12 @@ import { IconSettings } from '@tabler/icons-react';
 
             <Flex justify="space-evenly" ta="center" p="sm" gap={5} direction="column">
               
-                {!session && (<>
+                {!user && (<>
                     <Button component={Link} to='/login' onClick={closeDrawer} w="95%" variant="outline">Login</Button>
                     <Button  component={Link} to='/register' onClick={closeDrawer} w="95%">Register</Button>
                 </>)}
               
-                {session && (
+                {user && (
                 <Button variant="outline" onClick={() => {
                     logoutHandler(); 
                     closeDrawer()}}
