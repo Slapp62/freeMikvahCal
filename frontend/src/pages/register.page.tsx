@@ -25,6 +25,20 @@ const RegisterPage = () => {
     const {register, control, handleSubmit, reset, watch, formState: {errors}} = useForm<RegisterValues>(
         {
             mode: 'onChange',
+            defaultValues: {
+                email: '',
+                password: '',
+                confirmPassword: '',
+                ethnicity: undefined,
+                location: '',
+                preferences: {
+                    reminders: false,
+                },
+                special_onahs: {
+                    beinonit_30_31: false,
+                    onat_ohr_zarua: false
+                },
+            }
         }
     );
 
@@ -166,17 +180,14 @@ const RegisterPage = () => {
             <Group justify="space-between" align="flex-start">
                 <Fieldset legend="Special Onahs" w='45%'>
                     <Stack>
-                        <Checkbox label="Onat Ohr Zarua" {...register("special_onahs.onat_ohr_zarua", {
-                            setValueAs: (value) => !!value})}/>
-                        <Checkbox label="Onah Beinonit on day 31" {...register("special_onahs.beinonit_30_31", {
-                            setValueAs: (value) => !!value})}/>
+                        <Checkbox label="Onat Ohr Zarua" {...register("special_onahs.onat_ohr_zarua")}/>
+                        <Checkbox label="Onah Beinonit on day 31" {...register("special_onahs.beinonit_30_31")}/>
                     </Stack>
                 </Fieldset>
 
                 <Fieldset legend="Preferences" w='45%'>
                     <Stack>
-                        <Checkbox label="Email Reminders" {...register("preferences.reminders", {
-                            setValueAs: (value) => !!value})}/>
+                        <Checkbox label="Email Reminders" {...register("preferences.reminders")}/>
                     </Stack>
                 </Fieldset>
             </Group>
