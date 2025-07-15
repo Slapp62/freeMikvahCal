@@ -73,7 +73,6 @@ export default function CalendarPage() {
     <Stack className="calendar" w={isMobile ? '100%' : '80%'} mx='auto' align='center' justify='center'>
         <Title order={1} mt={10} ta='center'>Mikvah Calendar</Title>
         <Text fw={500} fz={isMobile ? 'lg' : 'xl'}>Click on a day to enter a new event. Click on an existing event to edit it.</Text>
-        <Text fw={500} fz={isMobile ? 'md' : 'sm'}>*Enable location services to get accurate times.</Text>
     
         <FullCalendar
             plugins={[dayGridPlugin, interactionPlugin]}

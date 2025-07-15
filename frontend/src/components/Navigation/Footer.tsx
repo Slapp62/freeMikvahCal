@@ -17,7 +17,7 @@ const data = [
   {
     title: 'Project',
     links: [
-      { label: 'GitHub', link: 'https://github.com/Slapp62/reactMantineProject.git' },
+      { label: 'GitHub', link: 'https://github.com/Slapp62/freeMikvahCal.git'},
       { label: 'MantineUI', link: 'https://mantine.dev' },
       { label: 'React', link: 'https://react.dev' },
       { label: 'Vite', link: 'https://vitejs.dev' },
@@ -41,6 +41,7 @@ export function Footer() {
         className={classes.link}
         component="a"
         href={link.link}
+        target='_blank'
       >
         {link.label}
       </Text>

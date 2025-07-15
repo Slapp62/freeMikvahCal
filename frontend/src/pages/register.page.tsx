@@ -27,8 +27,6 @@ const RegisterPage = () => {
 
     const onSubmit = async (formData : RegisterValues) => {
         console.log('form data:', formData);
-
-        
         
         // 1: submit email and password and receive user and session data
         const { data ,error } = await supabase.auth.signUp({
@@ -130,16 +128,16 @@ const RegisterPage = () => {
             />
 
             <PasswordInput
-            label="Confirm Password"
-            placeholder="Re-type your password"
-            required
-            type="password"
-            error={errors.confirmPassword?.message}
-            {...register("confirmPassword", 
-                {
-                    validate: (value) => value === watch('password') || "Passwords do not match",
-                    required: "Confirmation is required",
-                })}
+                label="Confirm Password"
+                placeholder="Re-type your password"
+                required
+                type="password"
+                error={errors.confirmPassword?.message}
+                {...register("confirmPassword", 
+                    {
+                        validate: (value) => value === watch('password') || "Passwords do not match",
+                        required: "Confirmation is required",
+                    })}
             />
 
             <Controller
